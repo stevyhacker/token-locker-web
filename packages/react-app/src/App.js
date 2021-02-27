@@ -1,7 +1,18 @@
-import React from "react";
+import React, { useRef } from 'react';
 import { Contract } from "@ethersproject/contracts";
 import { getDefaultProvider } from "@ethersproject/providers";
 import { useQuery } from "@apollo/react-hooks";
+import { useLocation, Switch } from 'react-router-dom';
+import AppRoute from './utils/AppRoute';
+import ScrollReveal from './utils/ScrollReveal';
+import ReactGA from 'react-ga';
+
+// Layouts
+import LayoutDefault from './layouts/LayoutDefault';
+
+// Views
+import Home from './views/Home';
+
 
 import { Body, Button, Header, Image, Link } from "./components";
 import logo from "./ethereumLogo.png";
@@ -9,6 +20,14 @@ import useWeb3Modal from "./hooks/useWeb3Modal";
 
 import { addresses, abis } from "@project/contracts";
 import GET_TRANSFERS from "./graphql/subgraph";
+
+// Initialize Google Analytics
+// ReactGA.initialize(process.env.REACT_APP_GA_CODE);
+
+const trackPage = page => {
+  // ReactGA.set({ page });
+  // ReactGA.pageview(page);
+};
 
 async function readOnChainData() {
   // Should replace with the end-user wallet, e.g. Metamask
@@ -41,10 +60,18 @@ function App() {
   const { loading, error, data } = useQuery(GET_TRANSFERS);
   const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
 
+  const childRef = useRef();
+  let location = useLocation();
+
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
       console.log({ transfers: data.transfers });
     }
+    const page = location.pathname;
+    document.body.classList.add('is-loaded')
+    childRef.current.init();
+    trackPage(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, error, data]);
 
   return (
@@ -58,7 +85,7 @@ function App() {
           Edit <code>packages/react-app/src/App.js</code> and save to reload.
         </p>
         {/* Remove the "hidden" prop and open the JavaScript console in the browser to see what this function does */}
-        <Button hidden onClick={() => readOnChainData()}>
+        <Button onClick={() => readOnChainData()}>
           Read On-Chain Balance
         </Button>
         <Link href="https://ethereum.org/developers/#getting-started" style={{ marginTop: "8px" }}>
@@ -66,8 +93,16 @@ function App() {
         </Link>
         <Link href="https://reactjs.org">Learn React</Link>
         <Link href="https://thegraph.com/docs/quick-start">Learn The Graph</Link>
+        <ScrollReveal
+          ref={childRef}
+          children={() => (
+            <Switch>
+              <AppRoute exact path="/" component={Home} layout={LayoutDefault} />
+            </Switch>
+          )} />
       </Body>
     </div>
+
   );
 }
 
