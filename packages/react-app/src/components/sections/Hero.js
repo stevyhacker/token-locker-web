@@ -1,10 +1,16 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import classNames from 'classnames';
-import { SectionProps } from '../../utils/SectionProps';
+import {SectionProps} from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import Image from '../elements/Image';
 import Modal from '../elements/Modal';
+import {useQuery} from "@apollo/react-hooks";
+import GET_TRANSFERS from "../../graphql/subgraph";
+import useWeb3Modal from '../../hooks/useWeb3Modal';
+import {addresses, abis} from "@project/contracts";
+import {getDefaultProvider} from "@ethersproject/providers";
+import {Contract} from "@ethersproject/contracts";
 
 const propTypes = {
   ...SectionProps.types
@@ -14,16 +20,27 @@ const defaultProps = {
   ...SectionProps.defaults
 }
 
-const Hero = ({
-  className,
-  topOuterDivider,
-  bottomOuterDivider,
-  topDivider,
-  bottomDivider,
-  hasBgColor,
-  invertColor,
-  ...props
-}) => {
+async function readOnChainData() {
+  // Should replace with the end-user wallet, e.g. Metamask
+  const defaultProvider = getDefaultProvider();
+  // Create an instance of an ethers.js Contract
+  // Read more about ethers.js on https://docs.ethers.io/v5/api/contract/contract/
+  const ceaErc20 = new Contract(addresses.ceaErc20, abis.erc20, defaultProvider);
+  // A pre-defined address that owns some CEAERC20 tokens
+  const tokenBalance = await ceaErc20.balanceOf("0x3f8CB69d9c0ED01923F11c829BaE4D9a4CB6c82C");
+  console.log({tokenBalance: tokenBalance.toString()});
+}
+
+function Hero({
+                className,
+                topOuterDivider,
+                bottomOuterDivider,
+                topDivider,
+                bottomDivider,
+                hasBgColor,
+                invertColor,
+                ...props
+              }) {
 
   const [videoModalActive, setVideomodalactive] = useState(false);
 
@@ -35,7 +52,7 @@ const Hero = ({
   const closeModal = (e) => {
     e.preventDefault();
     setVideomodalactive(false);
-  }   
+  }
 
   const outerClasses = classNames(
     'hero section center-content',
@@ -52,6 +69,31 @@ const Hero = ({
     bottomDivider && 'has-bottom-divider'
   );
 
+  const {loading, error, data} = useQuery(GET_TRANSFERS);
+  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
+
+  React.useEffect(() => {
+    if (!loading && !error && data && data.transfers) {
+      console.log({transfers: data.transfers});
+    }
+  }, [loading, error, data]);
+
+  function WalletButton({provider, loadWeb3Modal, logoutOfWeb3Modal}) {
+    return (
+      <Button
+        onClick={() => {
+          if (!provider) {
+            loadWeb3Modal();
+          } else {
+            logoutOfWeb3Modal();
+          }
+        }}
+      >
+        {!provider ? "Connect Wallet" : "Disconnect Wallet"}
+      </Button>
+    );
+  }
+
   return (
     <section
       {...props}
@@ -61,37 +103,50 @@ const Hero = ({
         <div className={innerClasses}>
           <div className="hero-content">
             <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
-              Landing template for <span className="text-color-primary">startups</span>
+              Token <span className="text-color-primary">Locker</span>
             </h1>
             <div className="container-xs">
               <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
-                Our landing page template works on all devices, so you only have to set it up once, and get beautiful results forever.
-                </p>
+                Safely keep your tokens locked for a time period of your own choosing.
+                <br/>
+                <br/>
+                Prevents you from making
+                bad decisions and selling too early.
+              </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
+
+                <ButtonGroup>
+                  <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal}/>
+
+                  <Button onClick={() => readOnChainData()}>
+                    Read On-Chain Balance
+                  </Button>
+                </ButtonGroup>
+
                 <ButtonGroup>
                   <Button tag="a" color="primary" wideMobile href="https://cruip.com/">
-                    Get started
-                    </Button>
+                    Lock
+                  </Button>
                   <Button tag="a" color="dark" wideMobile href="https://github.com/cruip/open-react-template/">
-                    View on Github
-                    </Button>
+                    Withdraw
+                  </Button>
                 </ButtonGroup>
               </div>
             </div>
           </div>
-          <div className="hero-figure reveal-from-bottom illustration-element-01" data-reveal-value="20px" data-reveal-delay="800">
+          <div className="hero-figure reveal-from-bottom illustration-element-01" data-reveal-value="20px"
+               data-reveal-delay="800">
             <a
               data-video="https://player.vimeo.com/video/174002812"
               href="#0"
               aria-controls="video-modal"
-              onClick={openModal}
-            >
+              onClick={openModal}>
               <Image
                 className="has-shadow"
                 src={require('./../../assets/images/video-placeholder.jpg')}
                 alt="Hero"
                 width={896}
-                height={504} />
+                height={504}/>
             </a>
           </div>
           <Modal
@@ -99,7 +154,7 @@ const Hero = ({
             show={videoModalActive}
             handleClose={closeModal}
             video="https://player.vimeo.com/video/174002812"
-            videoTag="iframe" />
+            videoTag="iframe"/>
         </div>
       </div>
     </section>
