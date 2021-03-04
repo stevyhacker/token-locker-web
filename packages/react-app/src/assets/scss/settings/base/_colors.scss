@@ -13,10 +13,10 @@ $palette: (
 		3: #33363A
 	),
 	primary: (
-		1: #6163FF,
-		2: #ACADFF,
-		3: #5658DD,
-		4: #E9E9FF
+		1: #429edb,
+		2: #acdbff,
+		3: #5673dd,
+		4: #e9e9ff
  	),
 	secondary: (
 		1: #24E5AF,
@@ -27,7 +27,7 @@ $palette: (
 	alert: (
 		error: #FF6171,
 		warning: #FFA173,
-		success: #24E5AF
+		success: #24e5af
 	)
 );
 
@@ -65,7 +65,7 @@ $icon--color: (
 	social-hover: 			get-color(primary, 2),			// social icons (:hover)
 	modal:					get-color(light, 3),			// modal icon
 	modal-hover:			get-color(light, 2),			// modal icon (:hover)
-    news-more:			    get-color(primary, 2),		// news - read more link arrow    
+    news-more:			    get-color(primary, 2),		// news - read more link arrow
 	// ↓ Inverted colors
 	hamburger-inverse:		get-color(dark, 2),				// hamburger icon
 	accordion-inverse:		get-color(primary, 1),			// accordion icon
