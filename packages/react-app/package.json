@@ -55,6 +55,7 @@
     "test": "react-scripts test"
   },
   "devDependencies": {
-    "history": "^5.0.0"
+    "history": "^5.0.0",
+    "prop-types": "^15.7.2"
   }
 }

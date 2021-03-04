@@ -52,9 +52,9 @@ const Cta = ({
           className={innerClasses}
         >
           <div className="cta-slogan">
-            <h3 className="m-0">
+            <h5 className="m-0">
               Get updates about this and my future Ethereum projects?
-              </h3>
+              </h5>
           </div>
           <div className="cta-action">
             <Input id="newsletter" type="email" label="Subscribe" labelHidden hasIcon="right" placeholder="Your email">

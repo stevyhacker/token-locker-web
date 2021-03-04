@@ -44,8 +44,10 @@ const Footer = ({
             <FooterSocial />
           </div>
           <div className="footer-bottom space-between text-xxs invert-order-desktop">
-            <FooterNav />
-            <div className="footer-copyright">Made by <a href="https://stevyhacker.github.io">stevyhacker</a>. All rights reserved</div>
+            <div className="footer-copyright">Made by <a href="https://stevyhacker.github.io">Stevan Bogosavljevic</a>.</div>
+          </div>
+          <div className="footer-bottom space-between text-xxs invert-order-desktop">
+          <FooterNav />
           </div>
         </div>
       </div>
