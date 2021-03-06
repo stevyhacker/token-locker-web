@@ -96,10 +96,10 @@ function FeaturesSplit(
               <div className="split-item-content center-content-mobile reveal-from-right"
                    data-reveal-container=".split-item">
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
-                  Lightning fast workflow
+                 No hidden fees
                 </div>
                 <h3 className="mt-0 mb-12">
-                  Open source
+                  Transparent costs
                 </h3>
                 <p className="m-0">
                   After the time period you set when depositing passes, you will be able to withdraw your tokens and the
@@ -124,7 +124,7 @@ function FeaturesSplit(
               <div className="split-item-content center-content-mobile reveal-from-left"
                    data-reveal-container=".split-item">
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
-                  Prevents panic
+                  Prevents hasty decisions
                 </div>
                 <h3 className="mt-0 mb-12">
                   Keep your long term plans

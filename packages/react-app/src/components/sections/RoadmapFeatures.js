@@ -11,18 +11,18 @@ const propTypes = {
 const defaultProps = {
   ...SectionTilesProps.defaults
 }
-const RoadmapFeatures = (
-  {
-    className,
-    topOuterDivider,
-    bottomOuterDivider,
-    topDivider,
-    bottomDivider,
-    hasBgColor,
-    invertColor,
-    pushLeft,
-    ...props
-  }) => {
+
+function RoadmapFeatures(
+  className,
+  topOuterDivider,
+  bottomOuterDivider,
+  topDivider,
+  bottomDivider,
+  hasBgColor,
+  invertColor,
+  pushLeft,
+  ...props
+) {
 
   const outerClasses = classNames(
     'features-tiles section',
@@ -45,8 +45,8 @@ const RoadmapFeatures = (
   );
 
   const sectionHeader = {
-    title: 'Safeguard your tokens',
-    paragraph: 'Keep your ERC20 tokens at a safe distance from a exchange. HODL to eternity.'
+    title: 'Feature Roadmap',
+    paragraph: 'New functionalities I am considering or working on at the moment.'
   };
 
   return (
@@ -72,11 +72,10 @@ const RoadmapFeatures = (
                 </div>
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">
-                    Robust Workflow
+                    Email notifications on token unlock dates
                   </h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat.
+                    Donate ETH here to speed up the development of this feature:
                   </p>
                 </div>
               </div>
@@ -95,11 +94,10 @@ const RoadmapFeatures = (
                 </div>
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">
-                    Robust Workflow
+                    Hard Mode for true hodlers with no withdrawals until unlock time passes
                   </h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat.
+                    Donate ETH here to speed up the development of this feature:
                   </p>
                 </div>
               </div>
@@ -118,11 +116,10 @@ const RoadmapFeatures = (
                 </div>
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">
-                    Robust Workflow
+                    Dedicated locked tokens balances page with price charts during time-lock
                   </h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat.
+                    Donate ETH here to speed up the development of this feature:
                   </p>
                 </div>
               </div>
@@ -141,11 +138,10 @@ const RoadmapFeatures = (
                 </div>
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">
-                    Robust Workflow
+                    Changeable ownership for the locked funds via issuing owner tokens
                   </h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat.
+                    Donate ETH here to speed up the development of this feature:
                   </p>
                 </div>
               </div>
@@ -164,11 +160,10 @@ const RoadmapFeatures = (
                 </div>
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">
-                    Robust Workflow
+                    Support for locking ETH
                   </h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat.
+                    Donate ETH here to speed up the development of this feature:
                   </p>
                 </div>
               </div>
@@ -187,11 +182,10 @@ const RoadmapFeatures = (
                 </div>
                 <div className="features-tiles-item-content">
                   <h4 className="mt-0 mb-8">
-                    Robust Workflow
+                    Support for locking NFTs
                   </h4>
                   <p className="m-0 text-sm">
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                    pariatur. Excepteur sint occaecat cupidatat.
+                    Donate ETH here to speed up the development of this feature:
                   </p>
                 </div>
               </div>
