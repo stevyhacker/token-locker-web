@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { useLocation, Switch } from 'react-router-dom';
+import React, {useRef} from 'react';
+import {useLocation, Switch} from 'react-router-dom';
 import AppRoute from './utils/AppRoute';
 import ScrollReveal from './utils/ScrollReveal';
 import ReactGA from 'react-ga';
@@ -11,14 +11,18 @@ import LayoutDefault from './layouts/LayoutDefault';
 import Home from './views/Home';
 
 
-import { Body, Button, Header, Image, Link } from "./components";
+import {Body, Button, Header, Image, Link} from "./components";
 import logo from "./ethereumLogo.png";
+import FeaturesTiles from "./components/sections/FeaturesTiles";
+import Roadmap from "./views/Roadmap";
+import Contact from "./views/Contact";
+import About from "./views/About";
 
 // Initialize Google Analytics
 ReactGA.initialize(process.env.REACT_APP_GA_CODE);
 
 const trackPage = page => {
-  ReactGA.set({ page });
+  ReactGA.set({page});
   ReactGA.pageview(page);
 };
 
@@ -43,9 +47,12 @@ function App() {
           ref={childRef}
           children={() => (
             <Switch>
-              <AppRoute exact path="/" component={Home} layout={LayoutDefault} />
+              <AppRoute exact path="/" component={Home} layout={LayoutDefault}/>
+              <AppRoute exact path="/roadmap" component={Roadmap} layout={LayoutDefault}/>
+              <AppRoute exact path="/about" component={About} layout={LayoutDefault}/>
+              <AppRoute exact path="/contact" component={Contact} layout={LayoutDefault}/>
             </Switch>
-          )} />
+          )}/>
       </Body>
     </div>
 
