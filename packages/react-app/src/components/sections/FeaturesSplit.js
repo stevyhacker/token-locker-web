@@ -1,6 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
-import { SectionSplitProps } from '../../utils/SectionProps';
+import {SectionSplitProps} from '../../utils/SectionProps';
 import SectionHeader from './partials/SectionHeader';
 import Image from '../elements/Image';
 
@@ -12,7 +12,7 @@ const defaultProps = {
   ...SectionSplitProps.defaults
 }
 
-const FeaturesSplit = ({
+function FeaturesSplit(
   className,
   topOuterDivider,
   bottomOuterDivider,
@@ -25,7 +25,7 @@ const FeaturesSplit = ({
   alignTop,
   imageFill,
   ...props
-}) => {
+) {
 
   const outerClasses = classNames(
     'features-split section',
@@ -61,84 +61,90 @@ const FeaturesSplit = ({
     >
       <div className="container">
         <div className={innerClasses}>
-          <SectionHeader data={sectionHeader} className="center-content" />
+          <SectionHeader data={sectionHeader} className="center-content"/>
           <div className={splitClasses}>
 
             <div className="split-item">
-              <div className="split-item-content center-content-mobile reveal-from-left" data-reveal-container=".split-item">
+              <div className="split-item-content center-content-mobile reveal-from-left"
+                   data-reveal-container=".split-item">
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
-                  Lightning fast workflow
-                  </div>
+                  Secure and open source
+                </div>
                 <h3 className="mt-0 mb-12">
                   Easy to use
-                  </h3>
+                </h3>
                 <p className="m-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua — Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </p>
+                  By depositing your tokens in a time-locked smart contract wallet you prevent market volatility
+                  influencing your long term investing decisions.
+                </p>
               </div>
               <div className={
                 classNames(
                   'split-item-image center-content-mobile reveal-from-bottom',
                   imageFill && 'split-item-image-fill'
                 )}
-                data-reveal-container=".split-item">
+                   data-reveal-container=".split-item">
                 <Image
                   src={require('./../../assets/images/drawn_illustration.png')}
                   alt="Features split 01"
                   width={528}
-                  height={396} />
+                  height={396}/>
               </div>
             </div>
 
             <div className="split-item">
-              <div className="split-item-content center-content-mobile reveal-from-right" data-reveal-container=".split-item">
+              <div className="split-item-content center-content-mobile reveal-from-right"
+                   data-reveal-container=".split-item">
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
                   Lightning fast workflow
-                  </div>
+                </div>
                 <h3 className="mt-0 mb-12">
                   Open source
-                  </h3>
+                </h3>
                 <p className="m-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua — Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </p>
+                  After the time period you set when depositing passes, you will be able to withdraw your tokens and the
+                  only cost will be the transaction gas cost.
+                </p>
               </div>
               <div className={
                 classNames(
                   'split-item-image center-content-mobile reveal-from-bottom',
                   imageFill && 'split-item-image-fill'
                 )}
-                data-reveal-container=".split-item">
+                   data-reveal-container=".split-item">
                 <Image
                   src={require('./../../assets/images/features-split-image-02.png')}
                   alt="Features split 02"
                   width={528}
-                  height={396} />
+                  height={396}/>
               </div>
             </div>
 
             <div className="split-item">
-              <div className="split-item-content center-content-mobile reveal-from-left" data-reveal-container=".split-item">
+              <div className="split-item-content center-content-mobile reveal-from-left"
+                   data-reveal-container=".split-item">
                 <div className="text-xxs text-color-primary fw-600 tt-u mb-8">
-                  Lightning fast workflow
-                  </div>
+                  Prevents panic
+                </div>
                 <h3 className="mt-0 mb-12">
-                  Data-driven insights
-                  </h3>
+                  Keep your long term plans
+                </h3>
                 <p className="m-0">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua — Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                  </p>
+                  If you change your mind and want to instantly withdraw without respecting the locked time period in
+                  order to discourage the user a fee of 20 percent will be applied.
+                </p>
               </div>
               <div className={
                 classNames(
                   'split-item-image center-content-mobile reveal-from-bottom',
                   imageFill && 'split-item-image-fill'
                 )}
-                data-reveal-container=".split-item">
+                   data-reveal-container=".split-item">
                 <Image
                   src={require('./../../assets/images/features-split-image-03.png')}
                   alt="Features split 03"
                   width={528}
-                  height={396} />
+                  height={396}/>
               </div>
             </div>
 

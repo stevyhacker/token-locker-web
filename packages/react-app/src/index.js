@@ -9,7 +9,7 @@ import App from "./App";
 import * as serviceWorker from './serviceWorker';
 import './assets/scss/style.scss';
 
-// You should replace this url with your own and put it into a .env file
+//TODO You should replace this url with your own and put it into a .env file
 // See all subgraphs: https://thegraph.com/explorer/
 const client = new ApolloClient({
   uri: "https://api.thegraph.com/subgraphs/name/paulrberg/create-eth-app",
@@ -21,7 +21,7 @@ ReactDOM.render(
   <ApolloProvider client={client}>
     <Router history={history}>
       <App/>
-    </Router>,
+    </Router>
   </ApolloProvider>,
   document.getElementById('root')
 );

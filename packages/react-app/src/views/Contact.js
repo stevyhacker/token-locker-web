@@ -6,10 +6,10 @@ import Cta from '../components/sections/Cta';
 function Contact() {
 
   return (
-    <>
+    <div>
       <FeaturesSplit invertMobile topDivider imageFill className="illustration-section-02"/>
       <Cta split/>
-    </>
+    </div>
   );
 }
 
