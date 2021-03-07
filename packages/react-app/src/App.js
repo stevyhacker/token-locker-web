@@ -11,9 +11,6 @@ import LayoutDefault from './layouts/LayoutDefault';
 import Home from './views/Home';
 
 
-import {Body, Button, Header, Image, Link} from "./components";
-import logo from "./ethereumLogo.png";
-import FeaturesTiles from "./components/sections/FeaturesTiles";
 import Roadmap from "./views/Roadmap";
 import Contact from "./views/Contact";
 import About from "./views/About";
