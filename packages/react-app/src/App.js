@@ -23,7 +23,6 @@ const trackPage = page => {
   ReactGA.pageview(page);
 };
 
-
 function App() {
 
   const childRef = useRef();

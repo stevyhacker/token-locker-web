@@ -75,7 +75,8 @@ function RoadmapFeatures(
                     Email notifications on token unlock dates
                   </h4>
                   <p className="m-0 text-sm">
-                    Donate ETH here to speed up the development of this feature:
+                    With email reminders for token unlock dates you won't forget to check on your tokens and withdraw
+                    them at the right time.
                   </p>
                 </div>
               </div>
@@ -97,7 +98,7 @@ function RoadmapFeatures(
                     Hard Mode for true hodlers with no withdrawals until unlock time passes
                   </h4>
                   <p className="m-0 text-sm">
-                    Donate ETH here to speed up the development of this feature:
+                    Only for the true believers in their tokens and their future prospects.
                   </p>
                 </div>
               </div>
@@ -119,7 +120,8 @@ function RoadmapFeatures(
                     Dedicated locked tokens balances page with price charts during time-lock
                   </h4>
                   <p className="m-0 text-sm">
-                    Donate ETH here to speed up the development of this feature:
+                    More statistics and analytics so you can track exactly how much more beneficial is it to keep the
+                    tokens locked.
                   </p>
                 </div>
               </div>
@@ -141,7 +143,8 @@ function RoadmapFeatures(
                     Changeable ownership for the locked funds via issuing owner tokens
                   </h4>
                   <p className="m-0 text-sm">
-                    Donate ETH here to speed up the development of this feature:
+                    Sophisticated ownership system where you can trade your locked tokens with others. Enables a lot of
+                    possibilities but would require a significant amount of work and a smart contract upgrade.
                   </p>
                 </div>
               </div>
@@ -163,7 +166,7 @@ function RoadmapFeatures(
                     Support for locking ETH
                   </h4>
                   <p className="m-0 text-sm">
-                    Donate ETH here to speed up the development of this feature:
+                    If you want a safe place for you Ether this could be it, just give it a little more time.
                   </p>
                 </div>
               </div>
@@ -185,7 +188,8 @@ function RoadmapFeatures(
                     Support for locking NFTs
                   </h4>
                   <p className="m-0 text-sm">
-                    Donate ETH here to speed up the development of this feature:
+                    Feedback on potential use cases of this feature would be greatly appreciated as non-fungible tokens
+                    greatly differ from their fungible counterparts.
                   </p>
                 </div>
               </div>
