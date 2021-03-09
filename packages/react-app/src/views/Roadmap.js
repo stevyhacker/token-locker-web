@@ -1,6 +1,6 @@
 import React from 'react';
 // import sections
-import Cta from '../components/sections/Cta';
+import CtaDonate from '../components/sections/CtaDonate';
 import RoadmapFeatures from '../components/sections/RoadmapFeatures';
 
 function Roadmap() {
@@ -8,7 +8,7 @@ function Roadmap() {
   return (
     <div>
       <RoadmapFeatures/>
-      <Cta split/>
+      <CtaDonate split/>
     </div>
   );
 }

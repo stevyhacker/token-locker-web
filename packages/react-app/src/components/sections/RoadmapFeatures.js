@@ -46,7 +46,7 @@ function RoadmapFeatures(
 
   const sectionHeader = {
     title: 'Feature Roadmap',
-    paragraph: 'New functionalities I am considering or working on at the moment.'
+    paragraph: 'In progress, planned and under consideration features:'
   };
 
   return (
