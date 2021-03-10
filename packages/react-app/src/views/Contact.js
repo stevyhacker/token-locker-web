@@ -1,13 +1,14 @@
 import React from 'react';
 // import sections
-import FeaturesSplit from '../components/sections/FeaturesSplit';
 import Cta from '../components/sections/Cta';
+import ContactForm from "../components/sections/ContactForm";
+
 
 function Contact() {
 
   return (
     <div>
-      <FeaturesSplit invertMobile topDivider imageFill className="illustration-section-02"/>
+      <ContactForm/>
       <Cta split/>
     </div>
   );
