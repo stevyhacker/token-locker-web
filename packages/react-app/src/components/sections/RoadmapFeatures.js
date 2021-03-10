@@ -46,7 +46,7 @@ function RoadmapFeatures(
 
   const sectionHeader = {
     title: 'Feature Roadmap',
-    paragraph: 'In progress, planned and under consideration features:'
+    paragraph: 'Work in progress, planned or under consideration features:'
   };
 
   return (
@@ -166,7 +166,7 @@ function RoadmapFeatures(
                     Support for locking ETH
                   </h4>
                   <p className="m-0 text-sm">
-                    If you want a safe place for you Ether this could be it, just give it a little more time.
+                    This feature is fairly simple to develop and it's already in progress.
                   </p>
                 </div>
               </div>
