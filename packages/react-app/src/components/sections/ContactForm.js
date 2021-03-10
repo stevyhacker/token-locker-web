@@ -61,7 +61,7 @@ function ContactForm(
               Contact Us
             </h3>
             <p className="m-0">
-              If you have some questions or want to give feedback on the app, don't hesitate to contact us.<br/>
+              If you have some questions or wish to give some thoughts on the app, don't hesitate to send us a message.<br/>
               In case you have issues with using the app we will try our best to assist you.<br/>
               You can always reach us via email at:
             </p>
