@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {SectionProps} from '../../utils/SectionProps';
-import Input from '../elements/Input';
 import Image from "../elements/Image";
 
 const propTypes = {
@@ -62,8 +61,8 @@ function CtaDonate(
             <Image
               src={require('./../../assets/images/donate_wallet_qr.png')}
               alt="Features split 01"
-              width={250}
-              height={200}/>
+              width={275}
+              height={225}/>
           </div>
         </div>
       </div>
