@@ -40,11 +40,6 @@ function ContactForm(
     bottomDivider && 'has-bottom-divider'
   );
 
-  const sectionHeader = {
-    title: 'You can reach me at:',
-    paragraph: 'tokenlocker@protonmail.com'
-  };
-
   return (
     <section
       {...props}
