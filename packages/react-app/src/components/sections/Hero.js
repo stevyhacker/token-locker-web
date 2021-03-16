@@ -93,11 +93,18 @@ function Hero(
             </h1>
             <div className="container-xs">
               <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
-                Safely keep your tokens locked for a time period of your own choosing.
+                Safely keep your tokens locked from yourself for a time period of your own choosing.
                 <br/>
                 <br/>
                 Prevents you from making
                 bad decisions and selling too early.
+                <br/>
+                It's free to use if you respect the unlock date for withdrawal that
+                you have chosen.
+                <br/>
+                <br/>
+                There is a penalty fee that you pick on deposit to protect yourself from trying to withdraw before the
+                unlock date.
               </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
 
@@ -105,14 +112,14 @@ function Hero(
                   <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal}
                                 logoutOfWeb3Modal={logoutOfWeb3Modal}/>
 
-                  <Button onClick={() => readOnChainData()}>
-                    Read On-Chain Balance
-                  </Button>
+                  {/*<Button onClick={() => readOnChainData()}>*/}
+                  {/*  Read On-Chain Balance*/}
+                  {/*</Button>*/}
                 </ButtonGroup>
 
                 <ButtonGroup>
                   <Button tag="a" color="primary" wideMobile href="https://cruip.com/">
-                    Lock
+                    Deposit
                   </Button>
                   <Button tag="a" color="dark" wideMobile href="https://github.com/cruip/open-react-template/">
                     Withdraw

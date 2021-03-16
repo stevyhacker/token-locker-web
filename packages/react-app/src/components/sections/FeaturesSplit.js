@@ -50,8 +50,8 @@ function FeaturesSplit(
   );
 
   const sectionHeader = {
-    title: 'Workflow that just works',
-    paragraph: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum — semper quis lectus nulla at volutpat diam ut venenatis.'
+    title: '',
+    paragraph: 'Have you ever seen a token you once owned jump 10x after a year since you sold it and regretted it?'
   };
 
   return (
@@ -113,7 +113,7 @@ function FeaturesSplit(
                 )}
                    data-reveal-container=".split-item">
                 <Image
-                  src={require('./../../assets/images/features-split-image-02.png')}
+                  src={require('./../../assets/images/drawn_illustration_2.png')}
                   alt="Features split 02"
                   width={528}
                   height={396}/>
@@ -141,7 +141,7 @@ function FeaturesSplit(
                 )}
                    data-reveal-container=".split-item">
                 <Image
-                  src={require('./../../assets/images/features-split-image-03.png')}
+                  src={require('./../../assets/images/drawn_illustration_3.png')}
                   alt="Features split 03"
                   width={528}
                   height={396}/>
