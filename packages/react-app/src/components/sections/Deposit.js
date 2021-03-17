@@ -43,16 +43,16 @@ function Deposit(
   }) {
 
 
-  const [videoModalActive, setVideomodalactive] = useState(false);
+  const [confirmModalActive, setConfirmVideoModalActive] = useState(false);
 
   const openModal = (e) => {
     e.preventDefault();
-    setVideomodalactive(true);
+    setConfirmVideoModalActive(true);
   }
 
   const closeModal = (e) => {
     e.preventDefault();
-    setVideomodalactive(false);
+    setConfirmVideoModalActive(false);
   }
 
 
@@ -104,25 +104,13 @@ function Deposit(
         <div className={innerClasses}>
           <div className="hero-content">
             <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
-              Token <span className="text-color-primary">Locker</span>
+              Lock <span className="text-color-primary">Token</span>
             </h1>
             <div className="container-xs">
               <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
-                Safely keep your tokens locked for a time period of your own choosing.
-                <br/>
-                <br/>
-                Prevents you from making
-                bad decisions and selling too early.
-                <br/>
-                It's free to use if you respect the unlock date for withdrawal that
-                you have chosen.
-                <br/>
-                <br/>
-                There is a penalty fee that you pick on deposit to protect yourself from trying to withdraw before the
-                unlock date.
+                Pick an ERC20 token, choose unlock date and set penalty fee and you are ready.
               </p>
               <div className="reveal-from-bottom" data-reveal-delay="600">
-
                 <ButtonGroup>
                   <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal}
                                 logoutOfWeb3Modal={logoutOfWeb3Modal}/>
@@ -141,7 +129,7 @@ function Deposit(
               </div>
               <Modal
                 id="video-modal"
-                show={videoModalActive}
+                show={confirmModalActive}
                 handleClose={closeModal}>
                 <Deposit/>
               </Modal>

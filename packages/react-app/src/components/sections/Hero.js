@@ -30,18 +30,17 @@ function Hero(
   }) {
 
 
-  const [videoModalActive, setVideomodalactive] = useState(false);
+  const [depositModalActive, setDepositModalActive] = useState(false);
 
   const openModal = (e) => {
     e.preventDefault();
-    setVideomodalactive(true);
+    setDepositModalActive(true);
   }
 
   const closeModal = (e) => {
     e.preventDefault();
-    setVideomodalactive(false);
+    setDepositModalActive(false);
   }
-
 
   const outerClasses = classNames(
     'hero section center-content',
@@ -127,7 +126,7 @@ function Hero(
               </div>
               <Modal
                 id="video-modal"
-                show={videoModalActive}
+                show={depositModalActive}
                 handleClose={closeModal}>
                 <Deposit/>
               </Modal>
