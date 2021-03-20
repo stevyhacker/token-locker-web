@@ -10,7 +10,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Slider from '@material-ui/core/Slider';
 import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
-import {Typography} from "@material-ui/core";
+import {Avatar, Typography} from "@material-ui/core";
 
 const propTypes = {
   ...SectionProps.types
@@ -60,6 +60,10 @@ function Deposit() {
     }
   ];
 
+  function depositToken() {
+
+  }
+
   return (
     <section className="hero section center-content">
       <div className="container-sm p-32">
@@ -104,9 +108,18 @@ function Deposit() {
                 </div>
 
                 <Autocomplete
+                  id="token-selection"
                   className="mt-24 mb-24"
                   options={tokenList.tokens}
-                  getOptionLabel={(option) => option.name}
+                  getOptionLabel={(option) => option.symbol}
+                  renderOption={(option) => (
+                    <React.Fragment>
+                      <Avatar src={option.logoURI}
+                              style={{marginRight: 8}}
+                      />
+                      {option.symbol} {option.name}
+                    </React.Fragment>
+                  )}
                   renderInput={(params) => <TextField {...params} label="Select token" variant="outlined"/>}
                 />
 
@@ -114,7 +127,7 @@ function Deposit() {
 
                 <ButtonGroup className="mt-32">
                   {/*<Button disabled wide wideMobile>Approve</Button>*/}
-                  <DepositButton wide wideMobile>Deposit</DepositButton>
+                  <DepositButton wide wideMobile onClick={depositToken()}>Deposit</DepositButton>
                 </ButtonGroup>
 
               </div>
