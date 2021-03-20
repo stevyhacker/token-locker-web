@@ -1,14 +1,12 @@
 import React from 'react';
-import classNames from 'classnames';
 import {SectionProps} from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import {useQuery} from "@apollo/react-hooks";
 import GET_TRANSFERS from "../../graphql/subgraph";
-import useWeb3Modal from '../../hooks/useWeb3Modal';
 import {makeStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import Slider from '@material-ui/core/Slider';
 import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
@@ -22,32 +20,7 @@ const defaultProps = {
   ...SectionProps.defaults
 }
 
-function Deposit(
-  {
-    className,
-    topOuterDivider,
-    bottomOuterDivider,
-    topDivider,
-    bottomDivider,
-    hasBgColor,
-    invertColor,
-    ...props
-  }) {
-
-  const outerClasses = classNames(
-    'hero section center-content',
-    topOuterDivider && 'has-top-divider',
-    bottomOuterDivider && 'has-bottom-divider',
-    hasBgColor && 'has-bg-color',
-    invertColor && 'invert-color',
-    className
-  );
-
-  const innerClasses = classNames(
-    'hero-inner section-inner',
-    topDivider && 'has-top-divider',
-    bottomDivider && 'has-bottom-divider'
-  );
+function Deposit() {
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
 
@@ -74,7 +47,9 @@ function Deposit(
 
   const classes = useStyles();
 
-  function valuetext(value) {
+  function valuetext(value: number) {
+    marks[0].value = value
+    marks[0].label = value + "%"
     return `${value} %`;
   }
 
@@ -86,27 +61,22 @@ function Deposit(
   ];
 
   return (
-    <section
-      {...props}
-      className={outerClasses}>
-      <div className="container-sm">
-        <div className={innerClasses}>
+    <section className="hero section center-content">
+      <div className="container-sm p-32">
+        <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
+          Lock <span className="text-color-primary">Token</span>
+        </h1>
+        <p className="mt-24 mb-32 reveal-from-bottom" data-reveal-delay="400">
+          Pick an ERC20 token, choose the unlock date, set penalty fee and you are ready.
+        </p>
+        <div className="hero-inner">
           <div className="hero-content">
-            <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
-              Lock <span className="text-color-primary">Token</span>
-            </h1>
-
             <div className="container-xs">
-              <p className="m-0 mb-32 reveal-from-bottom" data-reveal-delay="400">
-                Pick an ERC20 token, choose the unlock date, set penalty fee and you are ready.
-              </p>
-
               <div className="reveal-from-bottom" data-reveal-delay="600">
-
-                <div className={classes.root}>
+                <div>
                   <h5 className="mt-32">Unlock time</h5>
 
-                  <form className={classes.container} noValidate>
+                  <form noValidate>
                     <TextField
                       id="datetime-local"
                       type="datetime-local"
@@ -118,14 +88,14 @@ function Deposit(
                     />
                   </form>
 
-                  <h5 className="mt-32">Penalty fee</h5>
+                  <h5 className="mt-16">Penalty fee</h5>
                   <p>This fee is only applied if you try to withdraw before the unlock time you have set above.</p>
                   <Typography id="discrete-slider-custom" gutterBottom/>
                   <Slider
                     defaultValue={20}
                     aria-labelledby="discrete-slider-custom"
                     step={1}
-                    valueLabelDisplay="auto"
+                    valueLabelDisplay="off"
                     valueLabelFormat={valuetext}
                     marks={marks}
                     min={10}
@@ -133,18 +103,17 @@ function Deposit(
                   />
                 </div>
 
-                <TextField id="standard-basic" type="number" variant="outlined" label="Amount"/>
-
                 <Autocomplete
-                  className="mt-24"
+                  className="mt-24 mb-24"
                   options={tokenList.tokens}
                   getOptionLabel={(option) => option.name}
-                  style={{ width: 300 }}
-                  renderInput={(params) => <TextField {...params} label="Select token" variant="outlined" />}
+                  renderInput={(params) => <TextField {...params} label="Select token" variant="outlined"/>}
                 />
 
+                <TextField id="standard-basic" type="number" variant="outlined" label="Amount"/>
+
                 <ButtonGroup className="mt-32">
-                  <Button disabled wide wideMobile>Approve</Button>
+                  {/*<Button disabled wide wideMobile>Approve</Button>*/}
                   <DepositButton wide wideMobile>Deposit</DepositButton>
                 </ButtonGroup>
 
