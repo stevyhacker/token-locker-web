@@ -9,7 +9,10 @@ import useWeb3Modal from '../../hooks/useWeb3Modal';
 import {addresses, abis} from "@project/contracts";
 import {getDefaultProvider} from "@ethersproject/providers";
 import {Contract} from "@ethersproject/contracts";
-import Modal from "../elements/Modal";
+import {makeStyles} from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
+import Slider from '@material-ui/core/Slider';
+import {styled} from '@material-ui/core/styles';
 
 const propTypes = {
   ...SectionProps.types
@@ -19,16 +22,16 @@ const defaultProps = {
   ...SectionProps.defaults
 }
 
-async function readOnChainData() {
-  // Should replace with the end-user wallet, e.g. Metamask
-  const defaultProvider = getDefaultProvider();
-  // Create an instance of an ethers.js Contract
-  // Read more about ethers.js on https://docs.ethers.io/v5/api/contract/contract/
-  const ceaErc20 = new Contract(addresses.ceaErc20, abis.erc20, defaultProvider);
-  // A pre-defined address that owns some CEAERC20 tokens
-  const tokenBalance = await ceaErc20.balanceOf("0x3f8CB69d9c0ED01923F11c829BaE4D9a4CB6c82C");
-  console.log({tokenBalance: tokenBalance.toString()});
-}
+// async function readOnChainData() {
+//   // Should replace with the end-user wallet, e.g. Metamask
+//   const defaultProvider = getDefaultProvider();
+//   // Create an instance of an ethers.js Contract
+//   // Read more about ethers.js on https://docs.ethers.io/v5/api/contract/contract/
+//   const ceaErc20 = new Contract(addresses.ceaErc20, abis.erc20, defaultProvider);
+//   // A pre-defined address that owns some CEAERC20 tokens
+//   const tokenBalance = await ceaErc20.balanceOf("0x3f8CB69d9c0ED01923F11c829BaE4D9a4CB6c82C");
+//   console.log({tokenBalance: tokenBalance.toString()});
+// }
 
 function Deposit(
   {
@@ -41,20 +44,6 @@ function Deposit(
     invertColor,
     ...props
   }) {
-
-
-  const [confirmModalActive, setConfirmVideoModalActive] = useState(false);
-
-  const openModal = (e) => {
-    e.preventDefault();
-    setConfirmVideoModalActive(true);
-  }
-
-  const closeModal = (e) => {
-    e.preventDefault();
-    setConfirmVideoModalActive(false);
-  }
-
 
   const outerClasses = classNames(
     'hero section center-content',
@@ -79,6 +68,30 @@ function Deposit(
       console.log({transfers: data.transfers});
     }
   }, [loading, error, data]);
+
+  const useStyles = makeStyles((theme) => ({
+    container: {
+      display: 'flex',
+      flexWrap: 'wrap',
+    },
+    textField: {
+      marginLeft: theme.spacing(1),
+      marginRight: theme.spacing(1),
+      width: 200,
+    },
+  }));
+
+  const DepositButton = styled(Button)({
+    background: 'linear-gradient(45deg, #429DDA 30%, #5773DD 90%)',
+    border: 0,
+    borderRadius: 3,
+    // boxShadow: '0 2px 2px 2px rgba(33, 203, 243, .3)',
+    color: 'white',
+    height: 48
+  });
+
+
+  const classes = useStyles();
 
   function WalletButton({provider, loadWeb3Modal, logoutOfWeb3Modal}) {
     return (
@@ -114,25 +127,44 @@ function Deposit(
                 <ButtonGroup>
                   <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal}
                                 logoutOfWeb3Modal={logoutOfWeb3Modal}/>
-
-                  <Button onClick={() => readOnChainData()}>
-                    Read On-Chain Balance
-                  </Button>
                 </ButtonGroup>
 
-                <ButtonGroup>
-                  <Button tag="a" color="primary" wideMobile aria-controls="video-modal"
-                          onClick={openModal}>
-                    Deposit
-                  </Button>
+                <div className={classes.root}>
+
+                  <form className={classes.container} noValidate>
+                    <TextField
+                      id="datetime-local"
+                      label="Unlock time"
+                      type="datetime-local"
+                      defaultValue="2022-01-01T00:00"
+                      className={classes.textField}
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                    />
+                  </form>
+
+                  <h5 id="discrete-slider" className="mt-16">Penalty fee</h5>
+                  <p>This fee is only applied if you try to withdraw before the unlock time you have set above.</p>
+
+                  <Slider
+                    defaultValue={20}
+                    aria-labelledby="discrete-slider"
+                    step={1}
+                    valueLabelDisplay="auto"
+                    marks
+                    min={10}
+                    max={100}
+                  />
+                </div>
+
+                <TextField id="standard-basic" type="number" variant="outlined" label="Amount"/>
+
+                <ButtonGroup className="mt-24">
+                  <DepositButton wideMobile>Deposit</DepositButton>
                 </ButtonGroup>
+
               </div>
-              <Modal
-                id="video-modal"
-                show={confirmModalActive}
-                handleClose={closeModal}>
-                <Deposit/>
-              </Modal>
             </div>
           </div>
         </div>
