@@ -50,7 +50,6 @@ function Deposit(
   );
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
 
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
