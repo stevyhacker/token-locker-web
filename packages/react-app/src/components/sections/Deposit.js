@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import classNames from 'classnames';
 import {SectionProps} from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
@@ -8,8 +8,11 @@ import GET_TRANSFERS from "../../graphql/subgraph";
 import useWeb3Modal from '../../hooks/useWeb3Modal';
 import {makeStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/core/TextField';
 import Slider from '@material-ui/core/Slider';
 import {styled} from '@material-ui/core/styles';
+import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
+import {Typography} from "@material-ui/core";
 
 const propTypes = {
   ...SectionProps.types
@@ -72,6 +75,17 @@ function Deposit(
 
   const classes = useStyles();
 
+  function valuetext(value) {
+    return `${value} %`;
+  }
+
+  const marks = [
+    {
+      value: 20,
+      label: '20%',
+    }
+  ];
+
   return (
     <section
       {...props}
@@ -105,15 +119,16 @@ function Deposit(
                     />
                   </form>
 
-                  <h5 id="discrete-slider" className="mt-32">Penalty fee</h5>
+                  <h5 className="mt-32">Penalty fee</h5>
                   <p>This fee is only applied if you try to withdraw before the unlock time you have set above.</p>
-
+                  <Typography id="discrete-slider-custom" gutterBottom/>
                   <Slider
                     defaultValue={20}
-                    aria-labelledby="discrete-slider"
+                    aria-labelledby="discrete-slider-custom"
                     step={1}
                     valueLabelDisplay="auto"
-                    marks
+                    valueLabelFormat={valuetext}
+                    marks={marks}
                     min={10}
                     max={100}
                   />
@@ -121,7 +136,16 @@ function Deposit(
 
                 <TextField id="standard-basic" type="number" variant="outlined" label="Amount"/>
 
+                <Autocomplete
+                  className="mt-24"
+                  options={tokenList.tokens}
+                  getOptionLabel={(option) => option.name}
+                  style={{ width: 300 }}
+                  renderInput={(params) => <TextField {...params} label="Select token" variant="outlined" />}
+                />
+
                 <ButtonGroup className="mt-32">
+                  <Button disabled wide wideMobile>Approve</Button>
                   <DepositButton wide wideMobile>Deposit</DepositButton>
                 </ButtonGroup>
 
