@@ -119,7 +119,7 @@ function Hero(
                           onClick={openModal}>
                     Deposit
                   </Button>
-                  <Button tag="a" color="dark" wideMobile href="https://github.com/cruip/open-react-template/">
+                  <Button tag="a" color="dark" wideMobile onClick={openModal}>
                     Withdraw
                   </Button>
                 </ButtonGroup>

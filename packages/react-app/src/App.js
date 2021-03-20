@@ -3,6 +3,9 @@ import {useLocation, BrowserRouter} from 'react-router-dom';
 import AppRoute from './utils/AppRoute';
 import ScrollReveal from './utils/ScrollReveal';
 import ReactGA from 'react-ga';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import blue from '@material-ui/core/colors/blue';
 
 // Layouts
 import LayoutDefault from './layouts/LayoutDefault';
@@ -23,6 +26,22 @@ const trackPage = page => {
   ReactGA.pageview(page);
 };
 
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: [
+      'Futura',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif'
+    ].join(','),
+  },
+  palette: {
+    type: 'dark',
+    primary: blue
+  }
+});
+
 function App() {
 
   const childRef = useRef();
@@ -37,6 +56,7 @@ function App() {
   }, [location]);
 
   return (
+    <ThemeProvider theme={theme}>
     <ScrollReveal
       ref={childRef}
       children={() => (
@@ -47,6 +67,7 @@ function App() {
           <AppRoute exact path="/contact" component={Contact} layout={LayoutDefault}/>
         </BrowserRouter>
       )}/>
+    </ThemeProvider>
   );
 }
 
