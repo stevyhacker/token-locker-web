@@ -15,6 +15,7 @@ import {ethers} from "ethers";
 import {Contract} from '@ethersproject/contracts';
 import {abis} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
+import {sign} from "crypto";
 
 
 interface Web3Props {
@@ -24,6 +25,9 @@ interface Web3Props {
 const Deposit: FC<Web3Props> = ({provider}) => {
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
+  const [amount, setAmount] = useState(0);
+  const [selectedToken, setToken] = useState<Token>();
+  const tokens: Token[] = tokenList.tokens;
 
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
@@ -71,10 +75,8 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   const filterOptions = createFilterOptions({
     matchFrom: 'start',
     limit: 65,
-    stringify: (option: Token) => option.name
+    stringify: (option: Token) => option.name || option.symbol
   });
-
-  const tokens: Token[] = tokenList.tokens;
 
   async function readOnChainData(token: Token) {
     const tokenContract = new Contract(token.address, abis.erc20, provider);
@@ -83,7 +85,6 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
-  const [amount, setAmount] = useState(0);
 
   function amountInput(event: any) {
     setAmount(event.target.value)
@@ -96,11 +97,13 @@ const Deposit: FC<Web3Props> = ({provider}) => {
 
   function tokenInput(event: object, token: Token | null, reason: string) {
     console.log(token);
-    if (token != null)
+    if (token != null) {
+      setToken(token)
       readOnChainData(token).then(res => {
         console.log(res)
         setAmount(res)
       })
+    }
   }
 
   function penaltyFeeInput(event: any) {
@@ -109,7 +112,11 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   }
 
   function depositToken() {
-
+    if (selectedToken != undefined) {
+      const tokenContract = new Contract(selectedToken.address, abis.erc20, provider);
+      const signer = provider.getSigner()
+      // signer.signTransaction(tokenContract.approve(amount)).then(r => {})
+    }
   }
 
   return (
