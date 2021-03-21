@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import {SectionProps} from '../../utils/SectionProps';
+import React, {FC, useState} from 'react';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import {useQuery} from "@apollo/react-hooks";
@@ -12,19 +11,17 @@ import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
 import {Avatar, Typography} from "@material-ui/core";
 import {createFilterOptions} from '@material-ui/lab/Autocomplete';
-import {ethers, getDefaultProvider} from "ethers";
+import {ethers} from "ethers";
 import {Contract} from '@ethersproject/contracts';
 import {abis} from "@project/contracts";
+import {Web3Provider} from "@ethersproject/providers";
 
-const propTypes = {
-  ...SectionProps.types
+
+interface DepositProps {
+  provider: Web3Provider,
 }
 
-const defaultProps = {
-  ...SectionProps.defaults
-}
-
-function Deposit() {
+const Deposit: FC<DepositProps> = ({provider}) => {
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
 
@@ -51,18 +48,16 @@ function Deposit() {
 
   const classes = useStyles();
 
+  const marks = [{
+    value: 20,
+    label: '20%',
+  }];
+
   function valuetext(value: number) {
     marks[0].value = value
     marks[0].label = value + "%"
     return `${value} %`;
   }
-
-  const marks = [
-    {
-      value: 20,
-      label: '20%',
-    }
-  ];
 
   type Token = {
     "chainId": number,
@@ -82,11 +77,9 @@ function Deposit() {
   const tokens: Token[] = tokenList.tokens;
 
   async function readOnChainData(token: Token) {
-    const provider = getDefaultProvider()
     const tokenContract = new Contract(token.address, abis.erc20, provider);
-    // const signer = provider.getSigner()
-    const tokenBalance = await tokenContract.balanceOf("0x400Fc9C7F01Df3aa919659De434E0c584e68CB29");
-    // console.log({tokenBalance: ethers.utils.formatUnits(tokenBalance).toString()});
+    const signer = provider.getSigner()
+    const tokenBalance = await tokenContract.balanceOf(signer.getAddress());
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
@@ -179,7 +172,8 @@ function Deposit() {
                   renderInput={(params) => <TextField {...params} label="Enter token" variant="outlined"/>}
                 />
 
-                <TextField value={amount} id="standard-basic" onChange={amountInput} type="number" variant="outlined" label="Amount"/>
+                <TextField value={amount} id="standard-basic" onChange={amountInput} type="number" variant="outlined"
+                           label="Amount"/>
                 <ButtonGroup className="mt-32">
                   {/*<Button disabled wide wideMobile>Approve</Button>*/}
                   <DepositButton wide wideMobile onClick={depositToken()}>Deposit</DepositButton>
@@ -193,8 +187,5 @@ function Deposit() {
     </section>
   );
 }
-
-Deposit.propTypes = propTypes;
-Deposit.defaultProps = defaultProps;
 
 export default Deposit;

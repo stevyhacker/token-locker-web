@@ -9,6 +9,7 @@ import useWeb3Modal from '../../hooks/useWeb3Modal';
 import Modal from "../elements/Modal";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
+import {ethers} from "ethers";
 
 const propTypes = {
   ...SectionProps.types
@@ -30,19 +31,36 @@ function Hero(
     ...props
   }) {
 
-
+  const {loading, error, data} = useQuery(GET_TRANSFERS);
+  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
   const [depositModalActive, setDepositModalActive] = useState(false);
   const [withdrawModalActive, setWithdrawModalActive] = useState(false);
 
-  const openModal = (e) => {
-    e.preventDefault();
-    setDepositModalActive(true);
+  const openDepositModal = (e) => {
+    if (provider != null) {
+      e.preventDefault();
+      setDepositModalActive(true);
+    } else {
+      loadWeb3Modal().then(() => setDepositModalActive(true))
+    }
   }
 
   const openWithdrawModal = (e) => {
-    e.preventDefault();
-    setWithdrawModalActive(true);
+    if (provider != null) {
+      e.preventDefault();
+      setWithdrawModalActive(true);
+    } else {
+      loadWeb3Modal().then(() => setWithdrawModalActive(true))
+    }
   }
+
+  // async function getBalanceUsingEthers() {
+  //   provider.getBalance(provider.getSigner().getAddress()).then((balance) => {
+  //     let etherString = ethers.utils.formatEther(balance);
+  //     alert("Balance: " + etherString);
+  //     console.log("Balance: " + etherString);
+  //   });
+  // }
 
   const closeModal = (e) => {
     e.preventDefault();
@@ -64,9 +82,6 @@ function Hero(
     topDivider && 'has-top-divider',
     bottomDivider && 'has-bottom-divider'
   );
-
-  const {loading, error, data} = useQuery(GET_TRANSFERS);
-  const [provider, loadWeb3Modal, logoutOfWeb3Modal] = useWeb3Modal();
 
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
@@ -123,11 +138,11 @@ function Hero(
                 </ButtonGroup>
 
                 <ButtonGroup>
-                  <Button tag="a" color="primary" wideMobile aria-controls="video-modal"
-                          onClick={openModal}>
+                  <Button color="primary" wideMobile aria-controls="video-modal"
+                          onClick={openDepositModal}>
                     Deposit
                   </Button>
-                  <Button tag="a" color="dark" wideMobile onClick={openWithdrawModal}>
+                  <Button color="dark" wideMobile onClick={openWithdrawModal}>
                     Withdraw
                   </Button>
                 </ButtonGroup>
@@ -136,7 +151,7 @@ function Hero(
                 id="deposit-modal"
                 show={depositModalActive}
                 handleClose={closeModal}>
-                <Deposit/>
+                <Deposit provider={provider}/>
               </Modal>
               <Modal
                 id="withdraw-modal"
