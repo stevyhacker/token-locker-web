@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import {Link} from 'react-router-dom';
 
 function FooterNav(
-  className,
-  ...props
+  className
 ) {
 
   const classes = classNames(
@@ -13,10 +12,7 @@ function FooterNav(
   );
 
   return (
-    <nav
-      {...props}
-      className={classes}
-    >
+    <nav className={classes}>
       <ul className="list-reset">
         <li>
           <Link to="/roadmap">Roadmap</Link>
