@@ -12,7 +12,7 @@ import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
 import {Avatar, Typography} from "@material-ui/core";
 import {createFilterOptions} from '@material-ui/lab/Autocomplete';
-import {ethers} from "ethers";
+import {ethers, getDefaultProvider} from "ethers";
 import {Contract} from '@ethersproject/contracts';
 import {addresses, abis} from "@project/contracts";
 
@@ -82,13 +82,13 @@ function Deposit() {
   const tokens: Token[] = tokenList.tokens;
 
   async function readOnChainData(token: any) {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = getDefaultProvider()
     const tokenContract = new Contract(token.address, abis.erc20, provider);
-    const signer = provider.getSigner()
-    const tokenBalance = await tokenContract.balanceOf(signer._address);
-    console.log({tokenBalance: tokenBalance.toString()});
+    // const signer = provider.getSigner()
+    const tokenBalance = await tokenContract.balanceOf("0x400Fc9C7F01Df3aa919659De434E0c584e68CB29");
+    // console.log({tokenBalance: ethers.utils.formatUnits(tokenBalance).toString()});
+    return ethers.utils.formatUnits(tokenBalance).toString();
   }
-
 
   function amountInput(event: any) {
     let amount = event.target.value
@@ -103,7 +103,7 @@ function Deposit() {
   function tokenInput(event: object, token: Token | null, reason: string) {
     console.log(token);
     readOnChainData(token).then(res => {
-      console.log("Done")
+      console.log(res)
     })
   }
 
