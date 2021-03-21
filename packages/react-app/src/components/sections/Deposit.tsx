@@ -11,7 +11,10 @@ import Slider from '@material-ui/core/Slider';
 import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
 import {Avatar, Typography} from "@material-ui/core";
-import { createFilterOptions } from '@material-ui/lab/Autocomplete';
+import {createFilterOptions} from '@material-ui/lab/Autocomplete';
+import {ethers} from "ethers";
+import {Contract} from '@ethersproject/contracts';
+import {addresses, abis} from "@project/contracts";
 
 const propTypes = {
   ...SectionProps.types
@@ -73,10 +76,41 @@ function Deposit() {
   const filterOptions = createFilterOptions({
     matchFrom: 'start',
     limit: 65,
-    stringify: (option : Token) => option.name
+    stringify: (option: Token) => option.name
   });
 
   const tokens: Token[] = tokenList.tokens;
+
+  async function readOnChainData(token: any) {
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const tokenContract = new Contract(token.address, abis.erc20, provider);
+    const signer = provider.getSigner()
+    const tokenBalance = await tokenContract.balanceOf(signer._address);
+    console.log({tokenBalance: tokenBalance.toString()});
+  }
+
+
+  function amountInput(event: any) {
+    let amount = event.target.value
+    console.log(amount);
+  }
+
+  function unlockDateInput(event: any) {
+    let unlockDate = event.target.value
+    console.log(unlockDate);
+  }
+
+  function tokenInput(event: object, token: Token | null, reason: string) {
+    console.log(token);
+    readOnChainData(token).then(res => {
+      console.log("Done")
+    })
+  }
+
+  function penaltyFeeInput(event: any) {
+    let fee = event.target.value
+    console.log(fee);
+  }
 
   function depositToken() {
 
@@ -100,13 +134,11 @@ function Deposit() {
 
                   <form noValidate>
                     <TextField
-                      id="datetime-local"
-                      type="datetime-local"
-                      defaultValue="2022-01-01T00:00"
+                      id="date"
+                      type="date"
+                      defaultValue="2022-01-01"
                       className={classes.textField}
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
+                      onChange={unlockDateInput}
                     />
                   </form>
 
@@ -117,6 +149,7 @@ function Deposit() {
                     defaultValue={20}
                     aria-labelledby="discrete-slider-custom"
                     step={1}
+                    onChange={penaltyFeeInput}
                     valueLabelDisplay="off"
                     valueLabelFormat={valuetext}
                     marks={marks}
@@ -131,6 +164,7 @@ function Deposit() {
                   options={tokens}
                   getOptionLabel={(option) => option.symbol}
                   filterOptions={filterOptions}
+                  onChange={tokenInput}
                   renderOption={(option) => (
                     <React.Fragment>
                       <Avatar src={option.logoURI}
@@ -142,7 +176,7 @@ function Deposit() {
                   renderInput={(params) => <TextField {...params} label="Enter token" variant="outlined"/>}
                 />
 
-                <TextField id="standard-basic" type="number" variant="outlined" label="Amount"/>
+                <TextField id="standard-basic" onChange={amountInput} type="number" variant="outlined" label="Amount"/>
 
                 <ButtonGroup className="mt-32">
                   {/*<Button disabled wide wideMobile>Approve</Button>*/}
