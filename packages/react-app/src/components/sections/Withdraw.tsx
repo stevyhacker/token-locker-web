@@ -114,7 +114,7 @@ function Withdraw() {
                 />
 
                 {amount > 0 ? <Typography>Total locked: {amount}</Typography> : <div/>}
-                {amount == 0 ? <p>You haven't locked any amount of this token.</p> : <div/>}
+                {amount === 0 ? <p>You haven't locked any amount of this token.</p> : <div/>}
 
                 <ButtonGroup className="mt-32">
                   <WithdrawButton wide wideMobile onClick={withdrawToken()}>Withdraw</WithdrawButton>
