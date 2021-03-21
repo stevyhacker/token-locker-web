@@ -8,6 +8,7 @@ import GET_TRANSFERS from "../../graphql/subgraph";
 import useWeb3Modal from '../../hooks/useWeb3Modal';
 import Modal from "../elements/Modal";
 import Deposit from "./Deposit";
+import Withdraw from "./Withdraw";
 
 const propTypes = {
   ...SectionProps.types
@@ -31,15 +32,22 @@ function Hero(
 
 
   const [depositModalActive, setDepositModalActive] = useState(false);
+  const [withdrawModalActive, setWithdrawModalActive] = useState(false);
 
   const openModal = (e) => {
     e.preventDefault();
     setDepositModalActive(true);
   }
 
+  const openWithdrawModal = (e) => {
+    e.preventDefault();
+    setWithdrawModalActive(true);
+  }
+
   const closeModal = (e) => {
     e.preventDefault();
     setDepositModalActive(false);
+    setWithdrawModalActive(false);
   }
 
   const outerClasses = classNames(
@@ -119,16 +127,22 @@ function Hero(
                           onClick={openModal}>
                     Deposit
                   </Button>
-                  <Button tag="a" color="dark" wideMobile onClick={openModal}>
+                  <Button tag="a" color="dark" wideMobile onClick={openWithdrawModal}>
                     Withdraw
                   </Button>
                 </ButtonGroup>
               </div>
               <Modal
-                id="video-modal"
+                id="deposit-modal"
                 show={depositModalActive}
                 handleClose={closeModal}>
                 <Deposit/>
+              </Modal>
+              <Modal
+                id="withdraw-modal"
+                show={withdrawModalActive}
+                handleClose={closeModal}>
+                <Withdraw/>
               </Modal>
             </div>
           </div>
