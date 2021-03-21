@@ -11,6 +11,7 @@ import Slider from '@material-ui/core/Slider';
 import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
 import {Avatar, Typography} from "@material-ui/core";
+import { createFilterOptions } from '@material-ui/lab/Autocomplete';
 
 const propTypes = {
   ...SectionProps.types
@@ -59,6 +60,23 @@ function Deposit() {
       label: '20%',
     }
   ];
+
+  type Token = {
+    "chainId": number,
+    "address": string,
+    "name": string,
+    "symbol": string,
+    "decimals": number,
+    "logoURI"?: any
+  }
+
+  const filterOptions = createFilterOptions({
+    matchFrom: 'start',
+    limit: 65,
+    stringify: (option : Token) => option.name
+  });
+
+  const tokens: Token[] = tokenList.tokens;
 
   function depositToken() {
 
@@ -110,8 +128,9 @@ function Deposit() {
                 <Autocomplete
                   id="token-selection"
                   className="mt-24 mb-24"
-                  options={tokenList.tokens}
+                  options={tokens}
                   getOptionLabel={(option) => option.symbol}
+                  filterOptions={filterOptions}
                   renderOption={(option) => (
                     <React.Fragment>
                       <Avatar src={option.logoURI}
@@ -120,7 +139,7 @@ function Deposit() {
                       {option.symbol} {option.name}
                     </React.Fragment>
                   )}
-                  renderInput={(params) => <TextField {...params} label="Select token" variant="outlined"/>}
+                  renderInput={(params) => <TextField {...params} label="Enter token" variant="outlined"/>}
                 />
 
                 <TextField id="standard-basic" type="number" variant="outlined" label="Amount"/>
