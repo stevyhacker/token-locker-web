@@ -110,7 +110,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   }
 
   function depositToken() {
-    if (selectedToken != undefined) {
+    if (selectedToken !== undefined) {
       const signer = provider.getSigner()
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
       if (amount > 0) { //todo passing 0 as amount here just for demo
