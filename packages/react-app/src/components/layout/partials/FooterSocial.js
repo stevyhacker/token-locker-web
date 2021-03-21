@@ -31,7 +31,7 @@ const FooterSocial = ({
         {/*  </a>*/}
         {/*</li>*/}
         <li>
-          <a href="https://twitter.com/">
+          <a href="https://twitter.com/tokenlocker">
             <svg
               width="16"
               height="16"
@@ -44,7 +44,7 @@ const FooterSocial = ({
           </a>
         </li>
         <li>
-          <a href="https://google.com/">
+          <a href="https://t.me/joinchat/RjQ9R0VZh3IyOWI0">
             <svg xmlns="http://www.w3.org/2000/svg"
                  width="16"
                  height="16"
