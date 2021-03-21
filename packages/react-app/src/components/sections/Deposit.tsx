@@ -14,7 +14,7 @@ import {Avatar, Typography} from "@material-ui/core";
 import {createFilterOptions} from '@material-ui/lab/Autocomplete';
 import {ethers, getDefaultProvider} from "ethers";
 import {Contract} from '@ethersproject/contracts';
-import {addresses, abis} from "@project/contracts";
+import {abis} from "@project/contracts";
 
 const propTypes = {
   ...SectionProps.types
@@ -119,7 +119,6 @@ function Deposit() {
   function depositToken() {
 
   }
-
 
   return (
     <section className="hero section center-content">
