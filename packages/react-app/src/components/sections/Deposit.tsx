@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SectionProps} from '../../utils/SectionProps';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
@@ -81,14 +81,16 @@ function Deposit() {
 
   const tokens: Token[] = tokenList.tokens;
 
-  async function readOnChainData(token: any) {
+  async function readOnChainData(token: Token) {
     const provider = getDefaultProvider()
     const tokenContract = new Contract(token.address, abis.erc20, provider);
     // const signer = provider.getSigner()
     const tokenBalance = await tokenContract.balanceOf("0x400Fc9C7F01Df3aa919659De434E0c584e68CB29");
     // console.log({tokenBalance: ethers.utils.formatUnits(tokenBalance).toString()});
-    return ethers.utils.formatUnits(tokenBalance).toString();
+    return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
+
+  const [amount, setAmount] = useState(0);
 
   function amountInput(event: any) {
     let amount = event.target.value
@@ -102,9 +104,11 @@ function Deposit() {
 
   function tokenInput(event: object, token: Token | null, reason: string) {
     console.log(token);
-    readOnChainData(token).then(res => {
-      console.log(res)
-    })
+    if (token != null)
+      readOnChainData(token).then(res => {
+        console.log(res)
+        setAmount(res)
+      })
   }
 
   function penaltyFeeInput(event: any) {
@@ -115,6 +119,7 @@ function Deposit() {
   function depositToken() {
 
   }
+
 
   return (
     <section className="hero section center-content">
@@ -176,8 +181,7 @@ function Deposit() {
                   renderInput={(params) => <TextField {...params} label="Enter token" variant="outlined"/>}
                 />
 
-                <TextField id="standard-basic" onChange={amountInput} type="number" variant="outlined" label="Amount"/>
-
+                <TextField value={amount} id="standard-basic" onChange={amountInput} type="number" variant="outlined" label="Amount"/>
                 <ButtonGroup className="mt-32">
                   {/*<Button disabled wide wideMobile>Approve</Button>*/}
                   <DepositButton wide wideMobile onClick={depositToken()}>Deposit</DepositButton>
