@@ -93,8 +93,7 @@ function Deposit() {
   const [amount, setAmount] = useState(0);
 
   function amountInput(event: any) {
-    let amount = event.target.value
-    console.log(amount);
+    setAmount(event.target.value)
   }
 
   function unlockDateInput(event: any) {
