@@ -15,7 +15,6 @@ import {ethers} from "ethers";
 import {Contract} from '@ethersproject/contracts';
 import {abis} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
-import {sign} from "crypto";
 
 
 interface Web3Props {
@@ -85,7 +84,6 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
-
   function amountInput(event: any) {
     setAmount(event.target.value)
   }
@@ -113,9 +111,12 @@ const Deposit: FC<Web3Props> = ({provider}) => {
 
   function depositToken() {
     if (selectedToken != undefined) {
-      const tokenContract = new Contract(selectedToken.address, abis.erc20, provider);
       const signer = provider.getSigner()
-      // signer.signTransaction(tokenContract.approve(amount)).then(r => {})
+      const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
+      if (amount > 0) { //todo passing 0 as amount here just for demo
+        tokenContract.approve("0x400Fc9C7F01Df3aa919659De434E0c584e68CB29", 0).then(() => {
+        })
+      }
     }
   }
 

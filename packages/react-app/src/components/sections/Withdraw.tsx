@@ -21,6 +21,9 @@ interface Web3Props {
 const Withdraw: FC<Web3Props> = ({provider}) => {
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
+  const [selectedToken, setToken] = useState<Token>();
+  const [amount, setAmount] = useState<number>(-1);
+  const tokens: Token[] = tokenList.tokens;
 
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
@@ -50,29 +53,33 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
     stringify: (option: Token) => option.name
   });
 
-  const tokens: Token[] = tokenList.tokens;
-
   async function readOnChainData(token: Token) {
     const tokenContract = new Contract(token.address, abis.erc20, provider);
     const signer = provider.getSigner()
     const tokenBalance = await tokenContract.balanceOf(signer.getAddress());
-    // console.log({tokenBalance: ethers.utils.formatUnits(tokenBalance).toString()});
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
-  const [amount, setAmount] = useState(-1);
-
   function tokenInput(event: object, token: Token | null, reason: string) {
     console.log(token);
-    if (token != null)
+    if (token != null) {
+      setToken(token)
       readOnChainData(token).then(res => {
         console.log(res)
         setAmount(res)
       })
+    }
   }
 
   function withdrawToken() {
-
+    if (selectedToken != undefined) {
+      const signer = provider.getSigner()
+      const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
+      if (amount > 0) { //todo passing 0 as amount here just for demo
+        tokenContract.approve("0x400Fc9C7F01Df3aa919659De434E0c584e68CB29", 0).then(() => {
+        })
+      }
+    }
   }
 
   return (
