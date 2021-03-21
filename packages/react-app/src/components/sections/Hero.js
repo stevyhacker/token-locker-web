@@ -9,7 +9,6 @@ import useWeb3Modal from '../../hooks/useWeb3Modal';
 import Modal from "../elements/Modal";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
-import {ethers} from "ethers";
 
 const propTypes = {
   ...SectionProps.types
@@ -53,14 +52,6 @@ function Hero(
       loadWeb3Modal().then(() => setWithdrawModalActive(true))
     }
   }
-
-  // async function getBalanceUsingEthers() {
-  //   provider.getBalance(provider.getSigner().getAddress()).then((balance) => {
-  //     let etherString = ethers.utils.formatEther(balance);
-  //     alert("Balance: " + etherString);
-  //     console.log("Balance: " + etherString);
-  //   });
-  // }
 
   const closeModal = (e) => {
     e.preventDefault();
@@ -157,7 +148,7 @@ function Hero(
                 id="withdraw-modal"
                 show={withdrawModalActive}
                 handleClose={closeModal}>
-                <Withdraw/>
+                <Withdraw provider={provider}/>
               </Modal>
             </div>
           </div>

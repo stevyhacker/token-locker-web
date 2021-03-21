@@ -17,11 +17,11 @@ import {abis} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
 
 
-interface DepositProps {
+interface Web3Props {
   provider: Web3Provider,
 }
 
-const Deposit: FC<DepositProps> = ({provider}) => {
+const Deposit: FC<Web3Props> = ({provider}) => {
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
 
