@@ -184,7 +184,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
                            label="Amount"/>
                 <ButtonGroup className="mt-32">
                   {/*<Button disabled wide wideMobile>Approve</Button>*/}
-                  <DepositButton wide wideMobile onClick={depositToken()}>Deposit</DepositButton>
+                  <DepositButton wide wideMobile onClick={depositToken}>Deposit</DepositButton>
                 </ButtonGroup>
 
               </div>
