@@ -13,7 +13,7 @@ import {Avatar, Typography} from "@material-ui/core";
 import {createFilterOptions} from '@material-ui/lab/Autocomplete';
 import {ethers} from "ethers";
 import {Contract} from '@ethersproject/contracts';
-import {abis} from "@project/contracts";
+import {abis, addresses} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
 
 
@@ -114,7 +114,18 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const signer = provider.getSigner()
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
       if (amount > 0) { //todo passing 0 as amount here just for demo
-        tokenContract.approve("0x400Fc9C7F01Df3aa919659De434E0c584e68CB29", 0).then(() => {
+        tokenContract.approve(addresses.tokenLockerContractAddress, 0).then(() => {
+        })
+      }
+    }
+  }
+
+  function approveToken() {
+    if (selectedToken !== undefined) {
+      const signer = provider.getSigner()
+      const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
+      if (amount > 0) {
+        tokenContract.approve(addresses.tokenLockerContractAddress, amount).then(() => {
         })
       }
     }
@@ -179,11 +190,12 @@ const Deposit: FC<Web3Props> = ({provider}) => {
                   )}
                   renderInput={(params) => <TextField {...params} label="Enter token" variant="outlined"/>}
                 />
-
+                //TODO make input able to enter a custom token address, not only token autocomplete selection
                 <TextField value={amount} id="standard-basic" onChange={amountInput} type="number" variant="outlined"
                            label="Amount"/>
                 <ButtonGroup className="mt-32">
-                  {/*<Button disabled wide wideMobile>Approve</Button>*/}
+                  {amount > 0 ? <DepositButton wide wideMobile onClick={approveToken}>Approve</DepositButton> : <div/>}
+
                   <DepositButton wide wideMobile onClick={depositToken}>Deposit</DepositButton>
                 </ButtonGroup>
 

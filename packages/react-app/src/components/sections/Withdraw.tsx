@@ -11,7 +11,7 @@ import {Avatar, Typography} from "@material-ui/core";
 import {createFilterOptions} from '@material-ui/lab/Autocomplete';
 import {ethers} from "ethers";
 import {Contract} from '@ethersproject/contracts';
-import {abis} from "@project/contracts";
+import {abis, addresses} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
 
 interface Web3Props {
@@ -74,11 +74,10 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
   function withdrawToken() {
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
-      const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
-      if (amount > 0) { //todo passing 0 as amount here just for demo
-        tokenContract.approve("0x400Fc9C7F01Df3aa919659De434E0c584e68CB29", 0).then(() => {
-        })
-      }
+      const tokenLockerContract = new Contract(addresses.tokenLockerContractAddress, abis.tokenLocker, signer);
+      tokenLockerContract.withdraw(selectedToken.address).then(() => {
+
+      })
     }
   }
 
@@ -118,7 +117,7 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
                 {amount === 0 ? <p>You haven't locked any amount of this token.</p> : <div/>}
 
                 <ButtonGroup className="mt-32">
-                  <WithdrawButton wide wideMobile onClick={withdrawToken()}>Withdraw</WithdrawButton>
+                  <WithdrawButton wide wideMobile onClick={withdrawToken}>Withdraw</WithdrawButton>
                 </ButtonGroup>
 
               </div>
