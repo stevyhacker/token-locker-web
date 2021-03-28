@@ -1,11 +1,11 @@
-import React, {FC, useState} from 'react';
+import React, {ChangeEvent, FC, useState} from 'react';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import {useQuery} from "@apollo/react-hooks";
 import GET_TRANSFERS from "../../graphql/subgraph";
 import {makeStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, {AutocompleteInputChangeReason} from '@material-ui/lab/Autocomplete';
 import Slider from '@material-ui/core/Slider';
 import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
@@ -15,6 +15,7 @@ import {ethers} from "ethers";
 import {Contract} from '@ethersproject/contracts';
 import {abis, addresses} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
+import {isAddress} from "ethers/lib/utils";
 
 
 interface Web3Props {
@@ -25,8 +26,9 @@ const Deposit: FC<Web3Props> = ({provider}) => {
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
   const [amount, setAmount] = useState(0);
-  const [selectedToken, setToken] = useState<Token>();
-  const tokens: Token[] = tokenList.tokens;
+  const [selectedToken, setSelectedToken] = useState<Token>();
+  const [token, setToken] = useState("");
+  let tokens: Token[] = tokenList.tokens;
 
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
@@ -56,7 +58,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     label: '20%',
   }];
 
-  function valuetext(value: number) {
+  function valueText(value: number) {
     marks[0].value = value
     marks[0].label = value + "%"
     return `${value} %`;
@@ -74,7 +76,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   const filterOptions = createFilterOptions({
     matchFrom: 'start',
     limit: 65,
-    stringify: (option: Token) => option.name || option.symbol
+    stringify: (option: Token) => option.symbol || option.name || option.address
   });
 
   async function readOnChainData(token: Token) {
@@ -84,23 +86,66 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
-  function amountInput(event: any) {
-    setAmount(event.target.value)
+  async function readTokenData(tokenAddress: string): Promise<Token> {
+    const tokenContract = new Contract(tokenAddress, abis.erc20, provider);
+    const signer = provider.getSigner()
+    const tokenBalance = await tokenContract.balanceOf(signer.getAddress());
+    const decimals = await tokenContract.decimals()
+    const symbol = await tokenContract.symbol()
+    const name = await tokenContract.name()
+    setAmount(tokenBalance)
+    setToken(tokenContract.name())
+    return {
+      "chainId": 1,
+      "address": tokenAddress,
+      "name": name,
+      "symbol": symbol,
+      "decimals": decimals,
+      "logoURI": ""
+    }
   }
 
-  function unlockDateInput(event: any) {
+  function amountInput(event: React.ChangeEvent<HTMLInputElement>) {
+    setAmount(parseFloat(event.target.value))
+  }
+
+  function unlockDateInput(event: React.ChangeEvent<HTMLInputElement>) {
     let unlockDate = event.target.value
     console.log(unlockDate);
   }
 
-  function tokenInput(event: object, token: Token | null, reason: string) {
+  function tokenInput(event: any, token: string | Token | null, reason: string) {
     console.log(token);
-    if (token != null) {
-      setToken(token)
+    console.log(event);
+    console.log(reason);
+
+    if (token != null && typeof token !== "string") {
+      setSelectedToken(token)
+      setToken(token.name)
       readOnChainData(token).then(res => {
         console.log(res)
         setAmount(res)
-      })
+      }).catch((error: Error) => {
+        console.error(error);
+      });
+    }
+  }
+
+  function customTokenInput(event: ChangeEvent<{}>, address: string, reason: AutocompleteInputChangeReason) {
+    console.log(address);
+    console.log(reason);
+
+    if (isAddress(address)) {
+      console.log(event);
+      readTokenData(address)
+        .then(token => {
+          tokens.push(token)
+          setSelectedToken(token)
+          console.log(token);
+        })
+        .catch((error: Error) => {
+          console.error(error);
+        });
     }
   }
 
@@ -115,7 +160,9 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
       if (amount > 0) { //todo passing 0 as amount here just for demo
         tokenContract.approve(addresses.tokenLockerContractAddress, 0).then(() => {
-        })
+        }).catch((error: Error) => {
+          console.error(error);
+        });
       }
     }
   }
@@ -126,7 +173,9 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
       if (amount > 0) {
         tokenContract.approve(addresses.tokenLockerContractAddress, amount).then(() => {
-        })
+        }).catch((error: Error) => {
+          console.error(error);
+        });
       }
     }
   }
@@ -166,7 +215,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
                     step={1}
                     onChange={penaltyFeeInput}
                     valueLabelDisplay="off"
-                    valueLabelFormat={valuetext}
+                    valueLabelFormat={valueText}
                     marks={marks}
                     min={10}
                     max={100}
@@ -179,6 +228,10 @@ const Deposit: FC<Web3Props> = ({provider}) => {
                   options={tokens}
                   getOptionLabel={(option) => option.symbol}
                   filterOptions={filterOptions}
+                  noOptionsText={"For custom token, input full address"}
+                  onInputChange={customTokenInput}
+                  freeSolo={true}
+                  includeInputInList={true}
                   onChange={tokenInput}
                   renderOption={(option) => (
                     <React.Fragment>
@@ -188,9 +241,10 @@ const Deposit: FC<Web3Props> = ({provider}) => {
                       {option.symbol} {option.name}
                     </React.Fragment>
                   )}
-                  renderInput={(params) => <TextField {...params} label="Enter token" variant="outlined"/>}
+                  renderInput={(params) =>
+                    <TextField {...params} label="Select token or paste address" value={token} variant="outlined"/>
+                  }
                 />
-                //TODO make input able to enter a custom token address, not only token autocomplete selection
                 <TextField value={amount} id="standard-basic" onChange={amountInput} type="number" variant="outlined"
                            label="Amount"/>
                 <ButtonGroup className="mt-32">

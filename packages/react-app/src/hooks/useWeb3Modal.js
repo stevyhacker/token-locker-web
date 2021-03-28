@@ -8,7 +8,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 // You can get a key for free at https://infura.io/register
 const INFURA_ID = process.env.REACT_APP_INFURA_KEY;
 
-const NETWORK_NAME = "mainnet";
+const NETWORK_NAME = process.env.REACT_APP_ETH_NETWORK
 
 function useWeb3Modal(config = {}) {
   const [provider, setProvider] = useState();
