@@ -28,6 +28,9 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   const [amount, setAmount] = useState(0);
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [token, setToken] = useState("");
+  const [unlockDate, setUnlockDate] = useState(new Date(2022, 1, 1).getTime() / 1000);
+  const [penaltyFee, setPenaltyFee] = useState(20);
+
   let tokens: Token[] = tokenList.tokens;
 
   React.useEffect(() => {
@@ -111,6 +114,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
 
   function unlockDateInput(event: React.ChangeEvent<HTMLInputElement>) {
     let unlockDate = event.target.value
+    setUnlockDate(new Date(unlockDate).valueOf())
     console.log(unlockDate);
   }
 
@@ -151,15 +155,24 @@ const Deposit: FC<Web3Props> = ({provider}) => {
 
   function penaltyFeeInput(event: any) {
     let fee = event.target.value
+    setPenaltyFee(parseInt(fee))
     console.log(fee);
+  }
+
+  function clearInput() {
+    setAmount(0)
+    setSelectedToken(undefined)
+    setToken("")
   }
 
   function depositToken() {
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
-      const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
-      if (amount > 0) { //todo passing 0 as amount here just for demo
-        tokenContract.approve(addresses.tokenLockerContractAddress, 0).then(() => {
+      const tokenLockerContract = new Contract(addresses.tokenLockerContractAddress, abis.tokenLocker.abi, signer);
+      if (amount > 0) {
+        tokenLockerContract.hodlDeposit(selectedToken.address, amount, unlockDate, penaltyFee).then(() => {
+          console.log("Tokens deposited.")
+          clearInput()
         }).catch((error: Error) => {
           console.error(error);
         });
@@ -172,7 +185,10 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const signer = provider.getSigner()
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
       if (amount > 0) {
+        console.log(addresses.tokenLockerContractAddress)
+        console.log(amount)
         tokenContract.approve(addresses.tokenLockerContractAddress, amount).then(() => {
+          console.log("Tokens approved for spending.")
         }).catch((error: Error) => {
           console.error(error);
         });
