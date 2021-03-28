@@ -1,8 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Logo from './partials/Logo';
+import {useLocation} from 'react-router-dom'
 
 const propTypes = {
   navPosition: PropTypes.string,
@@ -20,17 +21,19 @@ const defaultProps = {
   bottomDivider: false
 }
 
-const Header = ({
-  className,
-  navPosition,
-  hideNav,
-  hideSignin,
-  bottomOuterDivider,
-  bottomDivider,
-  ...props
-}) => {
+const Header = (
+  {
+    className,
+    navPosition,
+    hideNav,
+    hideSignin,
+    bottomOuterDivider,
+    bottomDivider,
+    ...props
+  }) => {
 
   const [isActive, setIsactive] = useState(false);
+  const location = useLocation();
 
   const nav = useRef(null);
   const hamburger = useRef(null);
@@ -85,50 +88,50 @@ const Header = ({
             'site-header-inner',
             bottomDivider && 'has-bottom-divider'
           )}>
-          <Logo />
+          <Logo/>
           {!hideNav &&
-            <>
-              <button
-                ref={hamburger}
-                className="header-nav-toggle"
-                onClick={isActive ? closeMenu : openMenu}
-              >
-                <span className="screen-reader">Menu</span>
-                <span className="hamburger">
+          <>
+            <button
+              ref={hamburger}
+              className="header-nav-toggle"
+              onClick={isActive ? closeMenu : openMenu}
+            >
+              <span className="screen-reader">Menu</span>
+              <span className="hamburger">
                   <span className="hamburger-inner"></span>
                 </span>
-              </button>
-              <nav
-                ref={nav}
-                className={
+            </button>
+            <nav
+              ref={nav}
+              className={
+                classNames(
+                  'header-nav',
+                  isActive && 'is-active'
+                )}>
+              <div className="header-nav-inner">
+                <ul className={
                   classNames(
-                    'header-nav',
-                    isActive && 'is-active'
+                    'list-reset text-xs',
+                    navPosition && `header-nav-${navPosition}`
                   )}>
-                <div className="header-nav-inner">
-                  <ul className={
-                    classNames(
-                      'list-reset text-xs',
-                      navPosition && `header-nav-${navPosition}`
-                    )}>
-                    <li>
-                      <Link to="/roadmap" onClick={closeMenu}>Roadmap</Link>
-                    </li>
-                    <li>
-                      <Link to="/contact" onClick={closeMenu}>Contact</Link>
-                    </li>
-                  </ul>
-                  {!hideSignin &&
-                    <ul
-                      className="list-reset header-nav-right"
-                    >
-                      <li>
-                        <Link to="/" className="button button-primary button-wide-mobile button-sm" onClick={closeMenu}>App</Link>
-                      </li>
-                    </ul>}
-                </div>
-              </nav>
-            </>}
+                  <li>
+                    <Link to="/roadmap" onClick={closeMenu}>Roadmap</Link>
+                  </li>
+                  <li>
+                    <Link to="/contact" onClick={closeMenu}>Contact</Link>
+                  </li>
+                </ul>
+                {!hideSignin &&
+                <ul className="list-reset header-nav-right">
+                  <li>
+                    {location.pathname.endsWith("roadmap") || location.pathname.endsWith("contact") ?
+                      <Link to="/" className="button button-primary button-wide-mobile button-sm"
+                            onClick={closeMenu}>App</Link> : <div/>}
+                  </li>
+                </ul>}
+              </div>
+            </nav>
+          </>}
         </div>
       </div>
     </header>
