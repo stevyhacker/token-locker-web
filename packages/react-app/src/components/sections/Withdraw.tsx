@@ -1,10 +1,10 @@
-import React, {FC, useState} from 'react';
+import React, {ChangeEvent, FC, useState} from 'react';
 import ButtonGroup from '../elements/ButtonGroup';
 import Button from '../elements/Button';
 import {useQuery} from "@apollo/react-hooks";
 import GET_TRANSFERS from "../../graphql/subgraph";
 import TextField from '@material-ui/core/TextField';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import Autocomplete, {AutocompleteInputChangeReason} from '@material-ui/lab/Autocomplete';
 import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
 import {Avatar, Typography} from "@material-ui/core";
@@ -13,6 +13,7 @@ import {ethers} from "ethers";
 import {Contract} from '@ethersproject/contracts';
 import {abis, addresses} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
+import {isAddress} from "ethers/lib/utils";
 
 interface Web3Props {
   provider: Web3Provider,
@@ -21,9 +22,9 @@ interface Web3Props {
 const Withdraw: FC<Web3Props> = ({provider}) => {
 
   const {loading, error, data} = useQuery(GET_TRANSFERS);
-  const [selectedToken, setToken] = useState<Token>();
+  const [selectedToken, setSelectedToken] = useState<Token>();
   const [amount, setAmount] = useState<number>(-1);
-  const tokens: Token[] = tokenList.tokens;
+  let tokens: Token[] = tokenList.tokens;
 
   React.useEffect(() => {
     if (!loading && !error && data && data.transfers) {
@@ -60,24 +61,79 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
-  function tokenInput(event: object, token: Token | null, reason: string) {
+  async function readTokenData(tokenAddress: string): Promise<Token> {
+    const tokenContract = new Contract(tokenAddress, abis.erc20, provider);
+    const signer = provider.getSigner()
+    const tokenBalance = await tokenContract.balanceOf(signer.getAddress());
+    const decimals = await tokenContract.decimals()
+    const symbol = await tokenContract.symbol()
+    const name = await tokenContract.name()
+    setAmount(parseFloat(ethers.utils.formatUnits(tokenBalance)))
+    setSelectedToken(tokenContract.name())
+    return {
+      "chainId": 1,
+      "address": tokenAddress,
+      "name": name,
+      "symbol": symbol,
+      "decimals": decimals,
+      "logoURI": ""
+    }
+  }
+
+  function customTokenInput(event: ChangeEvent<{}>, address: string, reason: AutocompleteInputChangeReason) {
+    console.log(address);
+    console.log(reason);
+
+    if (isAddress(address)) {
+      console.log(event);
+      readTokenData(address)
+        .then(token => {
+          tokens.push(token)
+          setSelectedToken(token)
+          console.log(token);
+        })
+        .catch((error: Error) => {
+          console.error(error);
+        });
+    }
+  }
+
+  function tokenInput(event: object, token: string | Token | null, reason: string) {
     console.log(token);
-    if (token != null) {
-      setToken(token)
+    if (token != null && typeof token !== "string") {
+      setSelectedToken(token)
       readOnChainData(token).then(res => {
         console.log(res)
         setAmount(res)
-      })
+      }).catch((error: Error) => {
+        console.error(error);
+      });
+    } else {
+      if (typeof token === "string" && isAddress(token)) {
+        console.log(event);
+        readTokenData(token)
+          .then(token => {
+            tokens.push(token)
+            setSelectedToken(token)
+            console.log(token);
+          })
+          .catch((error: Error) => {
+            console.error(error);
+          });
+      }
     }
   }
 
   function withdrawToken() {
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
-      const tokenLockerContract = new Contract(addresses.tokenLockerContractAddress, abis.tokenLocker, signer);
+      const tokenLockerContract = new Contract(addresses.tokenLockerContractAddress, abis.tokenLocker.abi, signer);
       tokenLockerContract.withdraw(selectedToken.address).then(() => {
-
-      })
+        console.log("Tokens transferred back to your wallet successfully. ")
+      }).catch((error: Error) => {
+        console.error(error);
+        //TODO Implement early withdraw with fee UI
+      });
     }
   }
 
@@ -101,6 +157,10 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
                   options={tokens}
                   getOptionLabel={(option) => option.symbol}
                   filterOptions={filterOptions}
+                  noOptionsText={"For custom token, input full address"}
+                  freeSolo={true}
+                  onInputChange={customTokenInput}
+                  includeInputInList={true}
                   onChange={tokenInput}
                   renderOption={(option) => (
                     <React.Fragment>
@@ -110,7 +170,9 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
                       {option.symbol} {option.name}
                     </React.Fragment>
                   )}
-                  renderInput={(params) => <TextField {...params} label="Enter token" variant="outlined"/>}
+                  renderInput={(params) =>
+                    <TextField {...params} label="Select token or paste address" variant="outlined"/>
+                  }
                 />
 
                 {amount > 0 ? <Typography>Total locked: {amount}</Typography> : <div/>}

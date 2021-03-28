@@ -170,8 +170,13 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const signer = provider.getSigner()
       const tokenLockerContract = new Contract(addresses.tokenLockerContractAddress, abis.tokenLocker.abi, signer);
       if (amount > 0) {
-        tokenLockerContract.hodlDeposit(selectedToken.address, amount, unlockDate, penaltyFee).then(() => {
+        tokenLockerContract.hodlDeposit(
+          selectedToken.address,
+          ethers.utils.parseUnits(String(amount)),
+          unlockDate,
+          penaltyFee).then(() => {
           console.log("Tokens deposited.")
+          //TODO Implement success modal message
           clearInput()
         }).catch((error: Error) => {
           console.error(error);
@@ -187,7 +192,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       if (amount > 0) {
         console.log(addresses.tokenLockerContractAddress)
         console.log(amount)
-        tokenContract.approve(addresses.tokenLockerContractAddress, amount).then(() => {
+        tokenContract.approve(addresses.tokenLockerContractAddress, ethers.utils.parseUnits(String(amount))).then(() => {
           console.log("Tokens approved for spending.")
         }).catch((error: Error) => {
           console.error(error);
