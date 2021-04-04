@@ -16,6 +16,8 @@ import {Contract} from '@ethersproject/contracts';
 import {abis, addresses} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
 import {isAddress} from "ethers/lib/utils";
+import Modal from "../elements/Modal";
+import DepositSuccessModal from "./DepositSuccessModal";
 
 
 interface Web3Props {
@@ -30,6 +32,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   const [token, setToken] = useState("");
   const [unlockDate, setUnlockDate] = useState(new Date(2022, 1, 1).getTime() / 1000);
   const [penaltyFee, setPenaltyFee] = useState(20);
+  const [successModalActive, setSuccessModalActive] = useState(false);
 
   let tokens: Token[] = tokenList.tokens;
 
@@ -60,6 +63,11 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     value: 20,
     label: '20%',
   }];
+
+  const closeModal = (e : any) => {
+    e.preventDefault();
+    setSuccessModalActive(false);
+  }
 
   function valueText(value: number) {
     marks[0].value = value
@@ -96,8 +104,8 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     const decimals = await tokenContract.decimals()
     const symbol = await tokenContract.symbol()
     const name = await tokenContract.name()
-    setAmount(tokenBalance)
-    setToken(tokenContract.name())
+    setAmount(parseFloat(ethers.utils.formatUnits(tokenBalance)));
+    setToken(tokenContract.name());
     return {
       "chainId": 1,
       "address": tokenAddress,
@@ -176,7 +184,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
           unlockDate,
           penaltyFee).then(() => {
           console.log("Tokens deposited.")
-          //TODO Implement success modal message
+          setSuccessModalActive(true)
           clearInput()
         }).catch((error: Error) => {
           console.error(error);
@@ -273,7 +281,14 @@ const Deposit: FC<Web3Props> = ({provider}) => {
 
                   <DepositButton wide wideMobile onClick={depositToken}>Deposit</DepositButton>
                 </ButtonGroup>
-
+                <Modal
+                  id="success-modal"
+                  show={successModalActive}
+                  handleClose={closeModal}
+                  className
+                  closeHidden>
+                  <DepositSuccessModal/>
+                </Modal>
               </div>
             </div>
           </div>

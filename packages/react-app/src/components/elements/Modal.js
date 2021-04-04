@@ -14,9 +14,7 @@ const propTypes = {
 const defaultProps = {
   children: null,
   show: false,
-  closeHidden: false,
-  video: '',
-  videoTag: 'iframe'
+  closeHidden: false
 }
 
 const Modal = ({
@@ -25,8 +23,6 @@ const Modal = ({
   handleClose,
   show,
   closeHidden,
-  video,
-  videoTag,
   ...props
 }) => {
 
@@ -36,13 +32,13 @@ const Modal = ({
     return () => {
       document.removeEventListener('keydown', keyPress);
       document.removeEventListener('click', stopProgagation);
-    };    
+    };
   });
 
   useEffect(() => {
     handleBodyClass();
-  }, [props.show]); 
-  
+  }, [props.show]);
+
   const handleBodyClass = () => {
     if (document.querySelectorAll('.modal.is-active').length) {
       document.body.classList.add('modal-is-active');
@@ -62,7 +58,6 @@ const Modal = ({
   const classes = classNames(
     'modal',
     show && 'is-active',
-    video && 'modal-video',
     className
   );
 
@@ -75,23 +70,7 @@ const Modal = ({
           onClick={handleClose}
         >
           <div className="modal-inner" onClick={stopProgagation}>
-            {video ?
-              <div className="responsive-video">
-                {videoTag === 'iframe' ?
-                  <iframe
-                    title="video"
-                    src={video}
-                    frameBorder="0"
-                    allowFullScreen
-                  ></iframe> :
-                  <video
-                    v-else
-                    controls
-                    src={video}
-                  ></video>
-                }
-              </div> :
-              <>
+            {<>
                 {!closeHidden &&
                   <button
                     className="modal-close"

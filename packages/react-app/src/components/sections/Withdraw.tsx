@@ -14,6 +14,9 @@ import {Contract} from '@ethersproject/contracts';
 import {abis, addresses} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
 import {isAddress} from "ethers/lib/utils";
+import Modal from "../elements/Modal";
+import DepositSuccessModal from "./DepositSuccessModal";
+import WithdrawSuccessModal from "./WithdrawSuccessModal";
 
 interface Web3Props {
   provider: Web3Provider,
@@ -24,6 +27,8 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
   const {loading, error, data} = useQuery(GET_TRANSFERS);
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [amount, setAmount] = useState<number>(-1);
+  const [successModalActive, setSuccessModalActive] = useState(false);
+
   let tokens: Token[] = tokenList.tokens;
 
   React.useEffect(() => {
@@ -54,17 +59,20 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
     stringify: (option: Token) => option.name
   });
 
+  const closeModal = (e : any) => {
+    e.preventDefault();
+    setSuccessModalActive(false);
+  }
+
   async function readOnChainData(token: Token) {
     const tokenContract = new Contract(token.address, abis.erc20, provider);
-    const signer = provider.getSigner()
-    const tokenBalance = await tokenContract.balanceOf(signer.getAddress());
+    const tokenBalance = await tokenContract.balanceOf(addresses.tokenLockerRopstenContractAddress);
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
   async function readTokenData(tokenAddress: string): Promise<Token> {
     const tokenContract = new Contract(tokenAddress, abis.erc20, provider);
-    const signer = provider.getSigner()
-    const tokenBalance = await tokenContract.balanceOf(signer.getAddress());
+    const tokenBalance = await tokenContract.balanceOf(addresses.tokenLockerRopstenContractAddress);
     const decimals = await tokenContract.decimals()
     const symbol = await tokenContract.symbol()
     const name = await tokenContract.name()
@@ -127,9 +135,10 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
   function withdrawToken() {
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
-      const tokenLockerContract = new Contract(addresses.tokenLockerContractAddress, abis.tokenLocker.abi, signer);
+      const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
       tokenLockerContract.withdraw(selectedToken.address).then(() => {
         console.log("Tokens transferred back to your wallet successfully. ")
+        setSuccessModalActive(true)
       }).catch((error: Error) => {
         console.error(error);
         //TODO Implement early withdraw with fee UI
@@ -181,7 +190,14 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
                 <ButtonGroup className="mt-32">
                   <WithdrawButton wide wideMobile onClick={withdrawToken}>Withdraw</WithdrawButton>
                 </ButtonGroup>
-
+                <Modal
+                  id="success-modal"
+                  show={successModalActive}
+                  handleClose={closeModal}
+                  className
+                  closeHidden>
+                  <WithdrawSuccessModal/>
+                </Modal>
               </div>
             </div>
           </div>
