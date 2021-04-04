@@ -15,7 +15,6 @@ import {abis, addresses} from "@project/contracts";
 import {Web3Provider} from "@ethersproject/providers";
 import {isAddress} from "ethers/lib/utils";
 import Modal from "../elements/Modal";
-import DepositSuccessModal from "./DepositSuccessModal";
 import WithdrawSuccessModal from "./WithdrawSuccessModal";
 
 interface Web3Props {
@@ -59,7 +58,7 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
     stringify: (option: Token) => option.name
   });
 
-  const closeModal = (e : any) => {
+  const closeModal = (e: any) => {
     e.preventDefault();
     setSuccessModalActive(false);
   }
