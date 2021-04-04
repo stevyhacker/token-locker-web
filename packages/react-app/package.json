@@ -64,6 +64,7 @@
     "test": "react-scripts test"
   },
   "devDependencies": {
+    "@material-ui/styles": "^4.11.3",
     "history": "^5.0.0",
     "prop-types": "^15.7.2"
   }

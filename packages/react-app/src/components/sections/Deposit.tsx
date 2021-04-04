@@ -114,7 +114,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
 
   function unlockDateInput(event: React.ChangeEvent<HTMLInputElement>) {
     let unlockDate = event.target.value
-    setUnlockDate(new Date(unlockDate).valueOf())
+    setUnlockDate(new Date(unlockDate).valueOf() / 1000)
     console.log(unlockDate);
   }
 
@@ -168,7 +168,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   function depositToken() {
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
-      const tokenLockerContract = new Contract(addresses.tokenLockerContractAddress, abis.tokenLocker.abi, signer);
+      const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
       if (amount > 0) {
         tokenLockerContract.hodlDeposit(
           selectedToken.address,
@@ -190,9 +190,9 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const signer = provider.getSigner()
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
       if (amount > 0) {
-        console.log(addresses.tokenLockerContractAddress)
+        console.log(addresses.tokenLockerRopstenContractAddress)
         console.log(amount)
-        tokenContract.approve(addresses.tokenLockerContractAddress, ethers.utils.parseUnits(String(amount))).then(() => {
+        tokenContract.approve(addresses.tokenLockerRopstenContractAddress, ethers.utils.parseUnits(String(amount))).then(() => {
           console.log("Tokens approved for spending.")
         }).catch((error: Error) => {
           console.error(error);
