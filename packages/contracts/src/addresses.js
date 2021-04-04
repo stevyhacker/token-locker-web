@@ -2,7 +2,7 @@
 // Goerli, Kovan, Rinkeby and Ropsten. Replace it with your smart contracts.
 const addresses = {
   ceaErc20: "0xc1C0472c0C80bCcDC7F5D01A376Bd97a734B8815",
-  tokenLockerRopstenContractAddress: "0x30d4979f2189b91Ff54391632AC272e3ae9F4C1C",
+  tokenLockerRopstenContractAddress: "0xfFFb7955ecAEF5Cb4b0413D9f9e43C590b017456",
   ropstenDai: "0xad6d458402f60fd3bd25163575031acdce07538d"
 };
 

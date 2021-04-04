@@ -64,7 +64,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     label: '20%',
   }];
 
-  const closeModal = (e : any) => {
+  const closeModal = (e: any) => {
     e.preventDefault();
     setSuccessModalActive(false);
   }
@@ -178,6 +178,10 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const signer = provider.getSigner()
       const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
       if (amount > 0) {
+        console.log("Deposit: " + selectedToken.address)
+        console.log("Amount: " + ethers.utils.parseUnits(String(amount)))
+        console.log("Unlock date: " + unlockDate)
+        console.log("Penalty fee percentage: " + penaltyFee)
         tokenLockerContract.hodlDeposit(
           selectedToken.address,
           ethers.utils.parseUnits(String(amount)),
