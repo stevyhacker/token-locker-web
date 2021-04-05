@@ -9,6 +9,7 @@ import useWeb3Modal from '../../hooks/useWeb3Modal';
 import Modal from "../elements/Modal";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
+import ReactGA from 'react-ga';
 
 const propTypes = {
   ...SectionProps.types
@@ -39,6 +40,10 @@ function Hero(
     if (provider != null) {
       e.preventDefault();
       setDepositModalActive(true);
+      ReactGA.event({
+        category: 'User',
+        action: 'Open Deposit Modal'
+      });
     } else {
       loadWeb3Modal().then(() => setDepositModalActive(true))
     }
@@ -48,6 +53,10 @@ function Hero(
     if (provider != null) {
       e.preventDefault();
       setWithdrawModalActive(true);
+      ReactGA.event({
+        category: 'User',
+        action: 'Open Withdraw Modal'
+      });
     } else {
       loadWeb3Modal().then(() => setWithdrawModalActive(true))
     }

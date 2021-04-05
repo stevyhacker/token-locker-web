@@ -1,13 +1,11 @@
 import React, {ChangeEvent, FC, useState} from 'react';
 import ButtonGroup from '../elements/ButtonGroup';
-import Button from '../elements/Button';
 import {useQuery} from "@apollo/react-hooks";
 import GET_TRANSFERS from "../../graphql/subgraph";
 import {makeStyles} from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, {AutocompleteInputChangeReason} from '@material-ui/lab/Autocomplete';
 import Slider from '@material-ui/core/Slider';
-import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
 import {Avatar, Typography} from "@material-ui/core";
 import {createFilterOptions} from '@material-ui/lab/Autocomplete';
@@ -18,6 +16,9 @@ import {Web3Provider} from "@ethersproject/providers";
 import {isAddress} from "ethers/lib/utils";
 import Modal from "../elements/Modal";
 import DepositSuccessModal from "./DepositSuccessModal";
+import ReactGA from 'react-ga';
+import ActionButton from "../elements/ActionButton";
+import {Token} from "../../utils/Token";
 
 
 interface Web3Props {
@@ -49,14 +50,6 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     },
   }));
 
-  const DepositButton = styled(Button)({
-    background: 'linear-gradient(45deg, #429DDA 30%, #5773DD 90%)',
-    border: 0,
-    borderRadius: 3,
-    // boxShadow: '0 2px 2px 2px rgba(33, 203, 243, .3)',
-    color: 'white'
-  });
-
   const classes = useStyles();
 
   const marks = [{
@@ -73,15 +66,6 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     marks[0].value = value
     marks[0].label = value + "%"
     return `${value} %`;
-  }
-
-  type Token = {
-    "chainId": number,
-    "address": string,
-    "name": string,
-    "symbol": string,
-    "decimals": number,
-    "logoURI"?: any
   }
 
   const filterOptions = createFilterOptions({
@@ -174,6 +158,10 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   }
 
   function depositToken() {
+    ReactGA.event({
+      category: 'User',
+      action: 'Click Deposit Button'
+    });
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
       const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
@@ -198,6 +186,10 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   }
 
   function approveToken() {
+    ReactGA.event({
+      category: 'User',
+      action: 'Click Approve Button'
+    });
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
@@ -216,84 +208,80 @@ const Deposit: FC<Web3Props> = ({provider}) => {
   return (
     <section className="hero section center-content">
       <div className="container-sm p-32">
-        <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
+        <h1 className="mt-0 mb-16">
           Lock <span className="text-color-primary">Token</span>
         </h1>
-        <p className="mt-24 mb-32 reveal-from-bottom" data-reveal-delay="400">
+        <p className="mt-24 mb-32">
           Pick an ERC20 token, choose the unlock date, set penalty fee and you are ready.
         </p>
         <div className="hero-inner">
           <div className="hero-content">
             <div className="container-xs">
-              <div className="reveal-from-bottom" data-reveal-delay="600">
-                <div>
-                  <h5 className="mt-32">Unlock time</h5>
+                <h5 className="mt-32">Unlock time</h5>
 
-                  <form noValidate>
-                    <TextField
-                      id="date"
-                      type="date"
-                      defaultValue="2022-01-01"
-                      className={classes.textField}
-                      onChange={unlockDateInput}
-                    />
-                  </form>
-
-                  <h5 className="mt-16">Penalty fee</h5>
-                  <p>This fee is only applied if you try to withdraw before the unlock time you have set above.</p>
-                  <Typography id="discrete-slider-custom" gutterBottom/>
-                  <Slider
-                    defaultValue={20}
-                    aria-labelledby="discrete-slider-custom"
-                    step={1}
-                    onChange={penaltyFeeInput}
-                    valueLabelDisplay="off"
-                    valueLabelFormat={valueText}
-                    marks={marks}
-                    min={10}
-                    max={100}
+                <form noValidate>
+                  <TextField
+                    id="date"
+                    type="date"
+                    defaultValue="2022-01-01"
+                    className={classes.textField}
+                    onChange={unlockDateInput}
                   />
-                </div>
+                </form>
 
-                <Autocomplete
-                  id="token-selection"
-                  className="mt-24 mb-24"
-                  options={tokens}
-                  getOptionLabel={(option) => option.symbol}
-                  filterOptions={filterOptions}
-                  noOptionsText={"For custom token, input full address"}
-                  onInputChange={customTokenInput}
-                  freeSolo={true}
-                  includeInputInList={true}
-                  onChange={tokenInput}
-                  renderOption={(option) => (
-                    <React.Fragment>
-                      <Avatar src={option.logoURI}
-                              style={{marginRight: 8}}
-                      />
-                      {option.symbol} {option.name}
-                    </React.Fragment>
-                  )}
-                  renderInput={(params) =>
-                    <TextField {...params} label="Select token or paste address" value={token} variant="outlined"/>
-                  }
+                <h5 className="mt-16">Penalty fee</h5>
+                <p>This fee is only applied if you try to withdraw before the unlock time you have set above.</p>
+                <Typography id="discrete-slider-custom" gutterBottom/>
+                <Slider
+                  defaultValue={20}
+                  aria-labelledby="discrete-slider-custom"
+                  step={1}
+                  onChange={penaltyFeeInput}
+                  valueLabelDisplay="off"
+                  valueLabelFormat={valueText}
+                  marks={marks}
+                  min={10}
+                  max={100}
                 />
-                <TextField value={amount} id="standard-basic" onChange={amountInput} type="number" variant="outlined"
-                           label="Amount"/>
-                <ButtonGroup className="mt-32">
-                  {amount > 0 ? <DepositButton wide wideMobile onClick={approveToken}>Approve</DepositButton> : <div/>}
 
-                  <DepositButton wide wideMobile onClick={depositToken}>Deposit</DepositButton>
-                </ButtonGroup>
-                <Modal
-                  id="success-modal"
-                  show={successModalActive}
-                  handleClose={closeModal}
-                  className
-                  closeHidden>
-                  <DepositSuccessModal/>
-                </Modal>
-              </div>
+              <Autocomplete
+                id="token-selection"
+                className="mt-24 mb-24"
+                options={tokens}
+                getOptionLabel={(option) => option.symbol}
+                filterOptions={filterOptions}
+                noOptionsText={"For custom token, input full address"}
+                onInputChange={customTokenInput}
+                freeSolo={true}
+                includeInputInList={true}
+                onChange={tokenInput}
+                renderOption={(option) => (
+                  <React.Fragment>
+                    <Avatar src={option.logoURI}
+                            style={{marginRight: 8}}
+                    />
+                    {option.symbol} {option.name}
+                  </React.Fragment>
+                )}
+                renderInput={(params) =>
+                  <TextField {...params} label="Select token or paste address" value={token} variant="outlined"/>
+                }
+              />
+              <TextField value={amount} id="standard-basic" onChange={amountInput} type="number" variant="outlined"
+                         label="Amount"/>
+              <ButtonGroup className="mt-32">
+                {amount > 0 ? <ActionButton wide wideMobile onClick={approveToken}>Approve</ActionButton> : <div/>}
+
+                <ActionButton wide wideMobile onClick={depositToken}>Deposit</ActionButton>
+              </ButtonGroup>
+              <Modal
+                id="success-modal"
+                show={successModalActive}
+                handleClose={closeModal}
+                className
+                closeHidden>
+                <DepositSuccessModal/>
+              </Modal>
             </div>
           </div>
         </div>

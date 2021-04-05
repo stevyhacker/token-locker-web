@@ -6,9 +6,7 @@ const propTypes = {
   children: PropTypes.node,
   handleClose: PropTypes.func.isRequired,
   show: PropTypes.bool.isRequired,
-  closeHidden: PropTypes.bool,
-  video: PropTypes.string,
-  videoTag: PropTypes.oneOf(['iframe', 'video'])
+  closeHidden: PropTypes.bool
 }
 
 const defaultProps = {

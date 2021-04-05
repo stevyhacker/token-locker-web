@@ -1,11 +1,10 @@
 import React, {ChangeEvent, FC, useState} from 'react';
 import ButtonGroup from '../elements/ButtonGroup';
-import Button from '../elements/Button';
+import ActionButton from '../elements/ActionButton';
 import {useQuery} from "@apollo/react-hooks";
 import GET_TRANSFERS from "../../graphql/subgraph";
 import TextField from '@material-ui/core/TextField';
 import Autocomplete, {AutocompleteInputChangeReason} from '@material-ui/lab/Autocomplete';
-import {styled} from '@material-ui/core/styles';
 import tokenList from "../../assets/tokens/coinGeckoTokenList.json";
 import {Avatar, Typography} from "@material-ui/core";
 import {createFilterOptions} from '@material-ui/lab/Autocomplete';
@@ -16,6 +15,9 @@ import {Web3Provider} from "@ethersproject/providers";
 import {isAddress} from "ethers/lib/utils";
 import Modal from "../elements/Modal";
 import WithdrawSuccessModal from "./WithdrawSuccessModal";
+import ReactGA from "react-ga";
+import PanicWithdrawModal from "./PanicWithdrawModal";
+import {Token} from "../../utils/Token";
 
 interface Web3Props {
   provider: Web3Provider,
@@ -27,6 +29,7 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
   const [selectedToken, setSelectedToken] = useState<Token>();
   const [amount, setAmount] = useState<number>(-1);
   const [successModalActive, setSuccessModalActive] = useState(false);
+  const [panicWithdrawalModalActive, setPanicWithdrawalModalActive] = useState(false);
 
   let tokens: Token[] = tokenList.tokens;
 
@@ -35,22 +38,6 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
       console.log({transfers: data.transfers});
     }
   }, [loading, error, data]);
-
-  const WithdrawButton = styled(Button)({
-    background: 'linear-gradient(45deg, #429DDA 30%, #5773DD 90%)',
-    border: 0,
-    borderRadius: 3,
-    color: 'white'
-  });
-
-  type Token = {
-    "chainId": number,
-    "address": string,
-    "name": string,
-    "symbol": string,
-    "decimals": number,
-    "logoURI"?: any
-  }
 
   const filterOptions = createFilterOptions({
     matchFrom: 'start',
@@ -61,6 +48,7 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
   const closeModal = (e: any) => {
     e.preventDefault();
     setSuccessModalActive(false);
+    setPanicWithdrawalModalActive(false);
   }
 
   async function readOnChainData(token: Token) {
@@ -132,6 +120,10 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
   }
 
   function withdrawToken() {
+    ReactGA.event({
+      category: 'User',
+      action: 'Click Withdraw Button'
+    });
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
       const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
@@ -140,7 +132,7 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
         setSuccessModalActive(true)
       }).catch((error: Error) => {
         console.error(error);
-        //TODO Implement early withdraw with fee UI
+        setPanicWithdrawalModalActive(true)
       });
     }
   }
@@ -148,56 +140,61 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
   return (
     <section className="hero section center-content">
       <div className="container-sm p-32">
-        <h1 className="mt-0 mb-16 reveal-from-bottom" data-reveal-delay="200">
+        <h1 className="mt-0 mb-16">
           Unlock <span className="text-color-primary">Token</span>
         </h1>
-        <p className="mt-24 mb-32 reveal-from-bottom" data-reveal-delay="400">
+        <p className="mt-24 mb-32">
           Select ERC20 token you have previously locked and click withdraw to get your tokens back.
         </p>
         <div className="hero-inner">
           <div className="hero-content">
             <div className="container-xs">
-              <div className="reveal-from-bottom" data-reveal-delay="600">
+              <Autocomplete
+                id="token-selection"
+                className="mt-24 mb-24"
+                options={tokens}
+                getOptionLabel={(option) => option.symbol}
+                filterOptions={filterOptions}
+                noOptionsText={"For custom token, input full address"}
+                freeSolo={true}
+                onInputChange={customTokenInput}
+                includeInputInList={true}
+                onChange={tokenInput}
+                renderOption={(option) => (
+                  <React.Fragment>
+                    <Avatar src={option.logoURI}
+                            style={{marginRight: 8}}
+                    />
+                    {option.symbol} {option.name}
+                  </React.Fragment>
+                )}
+                renderInput={(params) =>
+                  <TextField {...params} label="Select token or paste address" variant="outlined"/>
+                }
+              />
 
-                <Autocomplete
-                  id="token-selection"
-                  className="mt-24 mb-24"
-                  options={tokens}
-                  getOptionLabel={(option) => option.symbol}
-                  filterOptions={filterOptions}
-                  noOptionsText={"For custom token, input full address"}
-                  freeSolo={true}
-                  onInputChange={customTokenInput}
-                  includeInputInList={true}
-                  onChange={tokenInput}
-                  renderOption={(option) => (
-                    <React.Fragment>
-                      <Avatar src={option.logoURI}
-                              style={{marginRight: 8}}
-                      />
-                      {option.symbol} {option.name}
-                    </React.Fragment>
-                  )}
-                  renderInput={(params) =>
-                    <TextField {...params} label="Select token or paste address" variant="outlined"/>
-                  }
-                />
+              {amount > 0 ? <Typography>Total locked: {amount}</Typography> : <div/>}
+              {amount === 0 ? <p>You haven't locked any amount of this token.</p> : <div/>}
 
-                {amount > 0 ? <Typography>Total locked: {amount}</Typography> : <div/>}
-                {amount === 0 ? <p>You haven't locked any amount of this token.</p> : <div/>}
-
-                <ButtonGroup className="mt-32">
-                  <WithdrawButton wide wideMobile onClick={withdrawToken}>Withdraw</WithdrawButton>
-                </ButtonGroup>
-                <Modal
-                  id="success-modal"
-                  show={successModalActive}
-                  handleClose={closeModal}
-                  className
-                  closeHidden>
-                  <WithdrawSuccessModal/>
-                </Modal>
-              </div>
+              <ButtonGroup className="mt-32">
+                <ActionButton wide wideMobile onClick={withdrawToken}>Withdraw</ActionButton>
+              </ButtonGroup>
+              <Modal
+                id="success-modal"
+                show={successModalActive}
+                handleClose={closeModal}
+                className
+                closeHidden>
+                <WithdrawSuccessModal/>
+              </Modal>
+              <Modal
+                id="panic-withdraw-modal"
+                show={panicWithdrawalModalActive}
+                handleClose={closeModal}
+                className
+                closeHidden>
+                <PanicWithdrawModal provider={provider} tokenAddress={selectedToken?.address}/>
+              </Modal>
             </div>
           </div>
         </div>
