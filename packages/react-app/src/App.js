@@ -15,15 +15,12 @@ import Home from './views/Home';
 import Roadmap from "./views/Roadmap";
 import Contact from "./views/Contact";
 import About from "./views/About";
+import RouteTracker from "./components/elements/RouteTracker";
 
 // Initialize Google Analytics
-ReactGA.initialize(process.env.REACT_APP_GA_CODE,
-  {testMode: process.env.NODE_ENV === 'test'});
+ReactGA.initialize(process.env.REACT_APP_GA_CODE);
 
-const trackPage = page => {
-  ReactGA.set({page});
-  ReactGA.pageview(page);
-};
+
 
 const theme = createMuiTheme({
   typography: {
@@ -47,12 +44,11 @@ function App() {
   let location = useLocation();
 
   useEffect(() => {
-    const page = location.pathname;
     document.body.classList.add('is-loaded')
     childRef.current.init();
-    trackPage(page);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
+
+  ReactGA.pageview(window.location.pathname + window.location.search);
 
   return (
     <ThemeProvider theme={theme}>
@@ -64,6 +60,7 @@ function App() {
             <AppRoute exact path="/roadmap" component={Roadmap} layout={LayoutDefault}/>
             <AppRoute exact path="/about" component={About} layout={LayoutDefault}/>
             <AppRoute exact path="/contact" component={Contact} layout={LayoutDefault}/>
+            <RouteTracker/>
           </BrowserRouter>
         )}/>
     </ThemeProvider>
