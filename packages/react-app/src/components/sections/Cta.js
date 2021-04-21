@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {SectionProps} from '../../utils/SectionProps';
-import Input from '../elements/Input';
+import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 
 const propTypes = {
   ...SectionProps.types,
@@ -42,23 +42,6 @@ function isEmail(email) {
   return re.test(String(email).toLowerCase());
 }
 
-function submitForm(event) {
-  const email = event.target.value;
-  if (isEmail(email)) {
-    const payload = {
-      "email": email
-    };
-
-    post(payload)
-      .then(() => {
-        // this.setState({error: null, submitted: true});
-      })
-      .catch(error => {
-        // this.setState({error: error.message, submitted: false});
-      });
-  }
-}
-
 function Cta(
   {
     className,
@@ -71,6 +54,30 @@ function Cta(
     split,
     ...props
   }) {
+
+  const [email, setEmail] = useState();
+  const [emailLabel, setEmailLabel] = useState("Your email here");
+
+  function handleChange(event) {
+    const email = event.target.value;
+    setEmail(email)
+  }
+
+  function handleSubmit() {
+    if (isEmail(email)) {
+      const payload = {
+        "email": email
+      };
+
+      post(payload)
+        .then(() => {
+          setEmailLabel("Your email is saved.")
+        })
+        .catch(error => {
+          // this.setState({error: error.message, submitted: false});
+        });
+    }
+  }
 
   const outerClasses = classNames(
     'cta section center-content-mobile reveal-from-bottom',
@@ -103,13 +110,18 @@ function Cta(
             </h4>
           </div>
           <div className="cta-action">
-            <Input onChange={submitForm} id="newsletter" type="email" autoComplete="email" label="Subscribe" labelHidden
-                   hasIcon="right"
-                   placeholder="Your email">
-              <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 5H1c-.6 0-1 .4-1 1s.4 1 1 1h8v5l7-6-7-6v5z" fill="#376DF9"/>
-              </svg>
-            </Input>
+            <ValidatorForm
+              onSubmit={handleSubmit}
+              onError={errors => console.log(errors)}>
+              <TextValidator
+                label={emailLabel}
+                onChange={handleChange}
+                name="email"
+                value={email}
+                validators={['isEmail']}
+                errorMessages={['Email is not valid']}
+              />
+            </ValidatorForm>
           </div>
         </div>
       </div>
