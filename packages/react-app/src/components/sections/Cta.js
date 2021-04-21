@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { SectionProps } from '../../utils/SectionProps';
+import {SectionProps} from '../../utils/SectionProps';
 import Input from '../elements/Input';
 
 const propTypes = {
@@ -14,17 +14,63 @@ const defaultProps = {
   split: false
 }
 
-const Cta = ({
-  className,
-  topOuterDivider,
-  bottomOuterDivider,
-  topDivider,
-  bottomDivider,
-  hasBgColor,
-  invertColor,
-  split,
-  ...props
-}) => {
+const post = async (data) => {
+  const url = "https://oc6wd9kndf.execute-api.eu-central-1.amazonaws.com/email/signup";
+
+  const params = {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  };
+
+  const response = await fetch(url, params);
+
+  if (response.status < 200 && response.status >= 300) {
+    const res = await response.json();
+
+    throw new Error(res);
+  }
+
+  return response.json();
+};
+
+function isEmail(email) {
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(String(email).toLowerCase());
+}
+
+function submitForm(event) {
+  const email = event.target.value;
+  if (isEmail(email)) {
+    const payload = {
+      "email": email
+    };
+
+    post(payload)
+      .then(() => {
+        // this.setState({error: null, submitted: true});
+      })
+      .catch(error => {
+        // this.setState({error: error.message, submitted: false});
+      });
+  }
+}
+
+function Cta(
+  {
+    className,
+    topOuterDivider,
+    bottomOuterDivider,
+    topDivider,
+    bottomDivider,
+    hasBgColor,
+    invertColor,
+    split,
+    ...props
+  }) {
 
   const outerClasses = classNames(
     'cta section center-content-mobile reveal-from-bottom',
@@ -53,13 +99,15 @@ const Cta = ({
         >
           <div className="cta-slogan">
             <h4 className="m-0">
-              Get updates about this and our future projects?
-              </h4>
+              Get updates about this and future projects?
+            </h4>
           </div>
           <div className="cta-action">
-            <Input id="newsletter" type="email" label="Subscribe" labelHidden hasIcon="right" placeholder="Your email">
+            <Input onChange={submitForm} id="newsletter" type="email" autoComplete="email" label="Subscribe" labelHidden
+                   hasIcon="right"
+                   placeholder="Your email">
               <svg width="16" height="12" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 5H1c-.6 0-1 .4-1 1s.4 1 1 1h8v5l7-6-7-6v5z" fill="#376DF9" />
+                <path d="M9 5H1c-.6 0-1 .4-1 1s.4 1 1 1h8v5l7-6-7-6v5z" fill="#376DF9"/>
               </svg>
             </Input>
           </div>
