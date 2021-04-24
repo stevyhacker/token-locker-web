@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import {SectionProps} from '../../utils/SectionProps';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
 import {Button} from "@material-ui/core";
+import axios from "axios";
 
 const propTypes = {
   ...SectionProps.types,
@@ -14,30 +15,6 @@ const defaultProps = {
   ...SectionProps.defaults,
   split: false
 }
-
-const post = async (data) => {
-  const url = "https://oc6wd9kndf.execute-api.eu-central-1.amazonaws.com/email/signup";
-
-  const params = {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Access-Control-Allow-Origin': 'https://tokenlocker.me'
-    }
-  };
-
-  const response = await fetch(url, params);
-
-  if (response.status < 200 && response.status >= 300) {
-    const res = await response.json();
-
-    throw new Error(res);
-  }
-
-  return response.json();
-};
 
 function isEmail(email) {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -70,14 +47,21 @@ function Cta(
       const payload = {
         "email": email
       };
+      const url = "https://oc6wd9kndf.execute-api.eu-central-1.amazonaws.com/email/signup";
 
-      post(payload)
-        .then(() => {
+      const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+
+      axios.post(url, JSON.stringify(payload), {headers})
+        .then(function (response) {
+          console.log(response);
           setEmailLabel("Your email is saved.")
           setEmail("")
         })
-        .catch(error => {
-          // this.setState({error: error.message, submitted: false});
+        .catch(function (error) {
+          console.log(error);
         });
     }
   }
