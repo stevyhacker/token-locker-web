@@ -23,7 +23,8 @@ const post = async (data) => {
     body: JSON.stringify(data),
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'Access-Control-Allow-Origin': 'https://tokenlocker.me'
     }
   };
 
