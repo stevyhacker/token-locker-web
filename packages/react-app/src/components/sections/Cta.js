@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {SectionProps} from '../../utils/SectionProps';
 import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
+import {Button} from "@material-ui/core";
 
 const propTypes = {
   ...SectionProps.types,
@@ -55,7 +56,7 @@ function Cta(
     ...props
   }) {
 
-  const [email, setEmail] = useState();
+  const [email, setEmail] = useState("");
   const [emailLabel, setEmailLabel] = useState("Your email here");
 
   function handleChange(event) {
@@ -72,6 +73,7 @@ function Cta(
       post(payload)
         .then(() => {
           setEmailLabel("Your email is saved.")
+          setEmail("")
         })
         .catch(error => {
           // this.setState({error: error.message, submitted: false});
@@ -101,9 +103,7 @@ function Cta(
       className={outerClasses}
     >
       <div className="container">
-        <div
-          className={innerClasses}
-        >
+        <div className={innerClasses}>
           <div className="cta-slogan">
             <h4 className="m-0">
               Get updates about this and future projects?
@@ -123,6 +123,7 @@ function Cta(
               />
             </ValidatorForm>
           </div>
+          <Button onClick={handleSubmit}>Sign up</Button>
         </div>
       </div>
     </section>
