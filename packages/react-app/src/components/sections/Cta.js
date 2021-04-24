@@ -71,7 +71,7 @@ function Cta(
                            tabIndex="-1" value=""/>
                   </div>
                   <button type="submit" value="Subscribe" name="subscribe"
-                          id="mc-embedded-subscribe" className="button ml-8">Subscribe
+                          id="mc-embedded-subscribe" className="button mt-8 ml-8">Subscribe
                   </button>
                 </div>
               </form>
