@@ -1,10 +1,8 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {SectionProps} from '../../utils/SectionProps';
-import {ValidatorForm, TextValidator} from 'react-material-ui-form-validator';
-import {Button} from "@material-ui/core";
-import axios from "axios";
+
 
 const propTypes = {
   ...SectionProps.types,
@@ -14,11 +12,6 @@ const propTypes = {
 const defaultProps = {
   ...SectionProps.defaults,
   split: false
-}
-
-function isEmail(email) {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
 }
 
 function Cta(
@@ -33,38 +26,6 @@ function Cta(
     split,
     ...props
   }) {
-
-  const [email, setEmail] = useState("");
-  const [emailLabel, setEmailLabel] = useState("Your email here");
-
-  function handleChange(event) {
-    const email = event.target.value;
-    setEmail(email)
-  }
-
-  function handleSubmit() {
-    if (isEmail(email)) {
-      const payload = {
-        "email": email
-      };
-      const url = "https://oc6wd9kndf.execute-api.eu-central-1.amazonaws.com/email/signup";
-
-      const headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-
-      axios.post(url, JSON.stringify(payload), {headers})
-        .then(function (response) {
-          console.log(response);
-          setEmailLabel("Your email is saved.")
-          setEmail("")
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-    }
-  }
 
   const outerClasses = classNames(
     'cta section center-content-mobile reveal-from-bottom',
@@ -95,20 +56,28 @@ function Cta(
             </h4>
           </div>
           <div className="cta-action">
-            <ValidatorForm
-              onSubmit={handleSubmit}
-              onError={errors => console.log(errors)}>
-              <TextValidator
-                label={emailLabel}
-                onChange={handleChange}
-                name="email"
-                value={email}
-                validators={['isEmail']}
-                errorMessages={['Email is not valid']}
-              />
-            </ValidatorForm>
+
+            <div id="mc_embed_signup" className="p-8">
+              <form
+                action="https://tokenlocker.us1.list-manage.com/subscribe/post?u=d06099a33651374304048974a&amp;id=de4ac34f83"
+                method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" className="validate"
+                target="_blank" noValidate>
+                <div id="mc_embed_signup_scroll">
+                  <input type="email" name="EMAIL" className="email p-8" id="mce-EMAIL" placeholder="Your email"
+                         required/>
+                  <div style={{position: "absolute", left: "-5000px"}} aria-hidden="true">
+                    <input type="text"
+                           name="b_d06099a33651374304048974a_de4ac34f83"
+                           tabIndex="-1" value=""/>
+                  </div>
+                  <button type="submit" value="Subscribe" name="subscribe"
+                          id="mc-embedded-subscribe" className="button ml-8">Subscribe
+                  </button>
+                </div>
+              </form>
+            </div>
+
           </div>
-          <Button onClick={handleSubmit}>Sign up</Button>
         </div>
       </div>
     </section>
