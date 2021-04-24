@@ -53,13 +53,13 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
 
   async function readOnChainData(token: Token) {
     const tokenContract = new Contract(token.address, abis.erc20, provider);
-    const tokenBalance = await tokenContract.balanceOf(addresses.tokenLockerRopstenContractAddress);
+    const tokenBalance = await tokenContract.balanceOf(addresses.tokenLockerMainContractAddress);
     return parseFloat(ethers.utils.formatUnits(tokenBalance));
   }
 
   async function readTokenData(tokenAddress: string): Promise<Token> {
     const tokenContract = new Contract(tokenAddress, abis.erc20, provider);
-    const tokenBalance = await tokenContract.balanceOf(addresses.tokenLockerRopstenContractAddress);
+    const tokenBalance = await tokenContract.balanceOf(addresses.tokenLockerMainContractAddress);
     const decimals = await tokenContract.decimals()
     const symbol = await tokenContract.symbol()
     const name = await tokenContract.name()
@@ -126,7 +126,7 @@ const Withdraw: FC<Web3Props> = ({provider}) => {
     });
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
-      const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
+      const tokenLockerContract = new Contract(addresses.tokenLockerMainContractAddress, abis.tokenLocker.abi, signer);
       tokenLockerContract.withdraw(selectedToken.address).then(() => {
         console.log("Tokens transferred back to your wallet successfully. ")
         setSuccessModalActive(true)

@@ -164,7 +164,7 @@ const Deposit: FC<Web3Props> = ({provider}) => {
     });
     if (selectedToken !== undefined) {
       const signer = provider.getSigner()
-      const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
+      const tokenLockerContract = new Contract(addresses.tokenLockerMainContractAddress, abis.tokenLocker.abi, signer);
       if (amount > 0) {
         console.log("Deposit: " + selectedToken.address)
         console.log("Amount: " + ethers.utils.parseUnits(String(amount)))
@@ -194,9 +194,9 @@ const Deposit: FC<Web3Props> = ({provider}) => {
       const signer = provider.getSigner()
       const tokenContract = new Contract(selectedToken.address, abis.erc20, signer);
       if (amount > 0) {
-        console.log(addresses.tokenLockerRopstenContractAddress)
+        console.log(addresses.tokenLockerMainContractAddress)
         console.log(amount)
-        tokenContract.approve(addresses.tokenLockerRopstenContractAddress, ethers.utils.parseUnits(String(amount))).then(() => {
+        tokenContract.approve(addresses.tokenLockerMainContractAddress, ethers.utils.parseUnits(String(amount))).then(() => {
           console.log("Tokens approved for spending.")
         }).catch((error: Error) => {
           console.error(error);

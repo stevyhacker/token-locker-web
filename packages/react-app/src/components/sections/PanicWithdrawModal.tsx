@@ -28,7 +28,7 @@ const PanicWithdrawModal: FC<Web3Props> = ({provider, tokenAddress}) => {
     });
     if (tokenAddress !== undefined) {
       const signer = provider.getSigner()
-      const tokenLockerContract = new Contract(addresses.tokenLockerRopstenContractAddress, abis.tokenLocker.abi, signer);
+      const tokenLockerContract = new Contract(addresses.tokenLockerMainContractAddress, abis.tokenLocker.abi, signer);
       tokenLockerContract.panicWithdraw(tokenAddress).then(() => {
         console.log("Tokens transferred back to your wallet successfully. ")
         setSuccessModalActive(true)
